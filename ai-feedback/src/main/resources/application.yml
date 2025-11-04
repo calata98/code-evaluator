@@ -14,7 +14,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
   ai:
     openai:
-      api-key: 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
+      api-key: ${OPENAI_API_KEY:}
       chat:
         options:
           model: gpt-4o-mini
