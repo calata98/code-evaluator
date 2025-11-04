@@ -1,4 +1,3 @@
-# ---- build ----
 FROM maven:3.9.8-eclipse-temurin-21 AS build
 
 ARG MODULE
@@ -7,16 +6,21 @@ WORKDIR /workspace
 
 COPY pom.xml ./pom.xml
 COPY contracts/pom.xml contracts/pom.xml
-COPY producer-api/pom.xml producer-api/pom.xml
-COPY consumer-service/pom.xml consumer-service/pom.xml
+COPY submission-api/pom.xml submission-api/pom.xml
+COPY evaluation-orchestrator/pom.xml evaluation-orchestrator/pom.xml
+COPY executor-service/pom.xml executor-service/pom.xml
+COPY ai-feedback/pom.xml ai-feedback/pom.xml
+COPY user-service/pom.xml user-service/pom.xml
 
 COPY contracts contracts
-COPY producer-api producer-api
-COPY consumer-service consumer-service
+COPY submission-api submission-api
+COPY evaluation-orchestrator evaluation-orchestrator
+COPY executor-service executor-service
+COPY ai-feedback ai-feedback
+COPY user-service user-service
 
 RUN mvn -B -DskipTests -pl ${MODULE} -am clean package
 
-# ---- runtime ----
 FROM eclipse-temurin:21-jre AS runtime
 ARG MODULE
 WORKDIR /app

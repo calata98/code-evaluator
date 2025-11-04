@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: user-service
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeevaluator}
+
+
+server:
+  port: 8088
+
+app:
+  issuer: "http://localhost:8088"
+
+security:
+  jwt:
+    issuer: "user-auth-service"
+    accessMinutes: 30
+    # Local
+    privatePemB64: "${JWT_PRIVATE_PEM_B64:}"
+    publicPemB64:  "${JWT_PUBLIC_PEM_B64:}"
+    # Docker
+    privatePemPath: "${JWT_PRIVATE_PATH:}"
+    publicPemPath:  "${JWT_PUBLIC_PATH:}"
+logging:
+  level:
+    root: INFO

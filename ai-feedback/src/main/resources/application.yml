@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: executor-service
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    consumer:
+      group-id: ${SPRING_KAFKA_GROUP_ID:ai-feedback-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.calata.evaluator.contracts.events"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
+  ai:
+    openai:
+      api-key: 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
+      chat:
+        options:
+          model: gpt-4o-mini
+
+server:
+  port: ${SERVER_PORT:8086}
+
+app:
+  kafka:
+    topics:
+      feedbackCreated: ${APP_TOPICS_FEED_CREATE:feedback-created}
+      feedbackRequested: ${APP_TOPICS_FEED_REQUEST:feedback-requests}

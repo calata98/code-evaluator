@@ -18,8 +18,11 @@
 
     <modules>
         <module>contracts</module>
-        <module>producer-api</module>
-        <module>consumer-service</module>
+        <module>submission-api</module>
+        <module>evaluation-orchestrator</module>
+        <module>executor-service</module>
+        <module>ai-feedback</module>
+        <module>user-service</module>
     </modules>
 
     <properties>
