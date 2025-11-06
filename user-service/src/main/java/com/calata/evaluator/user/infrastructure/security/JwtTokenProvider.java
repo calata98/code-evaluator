@@ -34,9 +34,9 @@ public class JwtTokenProvider implements TokenEncoder {
         return Jwts.builder()
                 .header().keyId(kid).and()
                 .issuer(issuer)
-                .subject(user.getId())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole().name())
+                .subject(user.id())
+                .claim("email", user.email())
+                .claim("role", user.role().name())
                 .issuedAt(new Date())
                 .expiration(Date.from(expiresAt))
                 .signWith(privateKey, SignatureAlgorithm.RS256)
@@ -44,17 +44,12 @@ public class JwtTokenProvider implements TokenEncoder {
     }
 
     @Override
-    public boolean isValid(String token) {
+    public boolean notValid(String token) {
         try {
-            claims(token); return true;
+            claims(token); return false;
         } catch (Exception e){
-            return false;
+            return true;
         }
-    }
-
-    @Override
-    public String subject(String token) {
-        return claims(token).getSubject();
     }
 
     @Override

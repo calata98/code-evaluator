@@ -35,6 +35,7 @@ class SubmissionService implements CreateSubmissionUseCase, UpdateSubmissionStat
     @Override
     public String updateSubmissionStatus(String submissionId, String status) {
        var submissionUpdated = submissionWriter.updateStatus(submissionId, status);
+       events.publishSubmissionStatusUpdated(submissionUpdated);
 
        return submissionUpdated.getId();
     }
@@ -58,7 +59,8 @@ class SubmissionService implements CreateSubmissionUseCase, UpdateSubmissionStat
                 submission.getLanguage().name(),
                 submission.getCode(),
                 submission.getStatus().name(),
-                submission.getCreatedAt().toString()
+                submission.getCreatedAt().toString(),
+                submission.getUserId()
         );
     }
 }

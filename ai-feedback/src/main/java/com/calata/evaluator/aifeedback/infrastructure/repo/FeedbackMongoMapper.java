@@ -9,13 +9,13 @@ public final class FeedbackMongoMapper {
         return new FeedbackDocument(
                 null,
                 evaluationId,
-                f.title(),
-                f.message(),
-                f.type().name(),
-                f.severity().name(),
-                f.suggestion(),
-                f.reference(),
-                f.createdAt()
+                f.getTitle(),
+                f.getMessage(),
+                f.getType().name(),
+                f.getSeverity().name(),
+                f.getSuggestion(),
+                f.getReference(),
+                f.getCreatedAt()
         );
     }
 }

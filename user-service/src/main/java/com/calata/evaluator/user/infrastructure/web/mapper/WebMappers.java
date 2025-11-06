@@ -12,11 +12,6 @@ public final class WebMappers {
     }
 
     public static UserResponse toUserResponse(User u){
-        var dto = new UserResponse();
-        dto.id = u.getId();
-        dto.email = u.getEmail();
-        dto.role = u.getRole().name();
-        dto.createdAt = u.getCreatedAt().toString();
-        return dto;
+        return new UserResponse(u.id(), u.email(), u.role().name(), u.createdAt().toString());
     }
 }

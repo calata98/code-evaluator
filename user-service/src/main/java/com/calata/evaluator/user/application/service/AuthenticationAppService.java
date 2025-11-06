@@ -21,7 +21,6 @@ public class AuthenticationAppService implements RegisterUserUseCase, LoginUseCa
     private final TokenEncoder tokenEncoder;
     private final TokenStore tokenStore;
 
-    // configurable access token duration in minutes
     private final long accessMinutes;
 
     public AuthenticationAppService(UserReader userReader,
@@ -52,7 +51,7 @@ public class AuthenticationAppService implements RegisterUserUseCase, LoginUseCa
     public AuthToken login(LoginCommand cmd) {
         var user = userReader.findByEmail(cmd.email().toLowerCase())
                 .orElseThrow(() -> new IllegalArgumentException("Wrong credentials"));
-        if (!passwordHasher.matches(cmd.password(), user.getPasswordHash())) {
+        if (!passwordHasher.matches(cmd.password(), user.passwordHash())) {
             throw new IllegalArgumentException("Wrong credentials");
         }
         Instant exp = Instant.now().plus(accessMinutes, ChronoUnit.MINUTES);
@@ -62,8 +61,13 @@ public class AuthenticationAppService implements RegisterUserUseCase, LoginUseCa
 
     @Override
     public void logout(LogoutCommand cmd) {
-        if (!tokenEncoder.isValid(cmd.token())) return;
-        if (tokenStore.isRevoked(cmd.token())) return;
+        if (tokenEncoder.notValid(cmd.token())) {
+            return;
+        }
+        if (tokenStore.isRevoked(cmd.token())) {
+            return;
+        }
+
         tokenStore.revoke(cmd.token(), tokenEncoder.expiresAt(cmd.token()));
     }
 }

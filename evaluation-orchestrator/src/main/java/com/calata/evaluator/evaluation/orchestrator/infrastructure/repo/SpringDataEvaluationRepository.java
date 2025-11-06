@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface SpringDataEvaluationRepository extends MongoRepository<EvaluationDocument, String> {
     Optional<EvaluationDocument> findBySubmissionId(String submissionId);
+
 }

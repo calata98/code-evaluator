@@ -9,7 +9,7 @@ public final class EvaluationPersistenceMapper {
     public static EvaluationDocument toDocument(Evaluation e) {
         return new EvaluationDocument(
                 e.getId(), e.getSubmissionId(), e.isPassed(), e.getScore(),
-                e.getTimeMs(), e.getMemoryMb(),
+                e.getRubric(), e.getJustification(),
                 e.getCreatedAt()
         );
     }
@@ -17,7 +17,7 @@ public final class EvaluationPersistenceMapper {
     public static Evaluation toDomain(EvaluationDocument d) {
         return new Evaluation(
                 d.getId(), d.getSubmissionId(), d.isPassed(), d.getScore(),
-                d.getTimeMs(), d.getMemoryMb(),
+                d.getRubric(), d.getJustification(),
                 d.getCreatedAt()
         );
     }

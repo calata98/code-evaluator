@@ -38,15 +38,11 @@ import java.util.UUID;
 @Configuration
 public class AuthServerConfig {
 
-    // === Cadena 1: Authorization Server (/oauth2/**, /.well-known/**) ===
+    // Authorization Server
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     SecurityFilterChain authServerSecurity(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        // Si usas OIDC, puedes activarlo así:
-        // http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
-
-        // No vuelvas a configurar authorizeHttpRequests aquí (causa el error)
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -55,7 +51,7 @@ public class AuthServerConfig {
         return http.build();
     }
 
-    // === Cadena 2: Resto de la app ===
+    // API Security
     @Bean
     @Order(2)
     SecurityFilterChain appSecurity(HttpSecurity http,
@@ -78,7 +74,7 @@ public class AuthServerConfig {
                 .build();
     }
 
-    // === CORS (dev-friendly) ===
+    // Cors
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         var cfg = new CorsConfiguration();
@@ -93,7 +89,7 @@ public class AuthServerConfig {
         return source;
     }
 
-    // === OAuth2 client de servicio (para client_credentials) ===
+    // OAuth2 Registered Clients
     @Bean
     RegisteredClientRepository registeredClientRepository(PasswordEncoder encoder) {
         var client = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -111,7 +107,7 @@ public class AuthServerConfig {
 
     @Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
-    // === JWK para firmar los tokens (/.well-known/jwks.json) ===
+    // JWT Source
     @Bean
     JWKSource<SecurityContext> jwkSource() {
         var keyPair = generateRsaKey();

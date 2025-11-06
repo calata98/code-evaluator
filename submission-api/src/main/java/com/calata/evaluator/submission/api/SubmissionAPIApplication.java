@@ -2,13 +2,14 @@ package com.calata.evaluator.submission.api;
 
 import com.calata.evaluator.submission.api.infrastructure.kafka.KafkaTopicsProps;
 import com.calata.evaluator.submission.api.infrastructure.repo.SpringDataSubmissionRepository;
+import com.calata.evaluator.submission.api.readmodel.repo.SubmissionDetailViewRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @EnableConfigurationProperties(KafkaTopicsProps.class)
-@EnableMongoRepositories(basePackageClasses = SpringDataSubmissionRepository.class)
+@EnableMongoRepositories(basePackageClasses = {SpringDataSubmissionRepository.class, SubmissionDetailViewRepository.class})
 @SpringBootApplication
 public class SubmissionAPIApplication {
 

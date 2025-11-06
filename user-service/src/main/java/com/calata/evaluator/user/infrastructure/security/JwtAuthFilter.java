@@ -27,7 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String hdr = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (hdr != null && hdr.startsWith("Bearer ")) {
             String token = hdr.substring(7);
-            if (!tokenEncoder.isValid(token) || tokenStore.isRevoked(token)) {
+            if (tokenEncoder.notValid(token) || tokenStore.isRevoked(token)) {
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }

@@ -1,14 +1,15 @@
 package com.calata.evaluator.evaluation.orchestrator.infrastructure.repo;
 
+import com.calata.evaluator.contracts.types.FeedbackType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.Map;
 
 @Document("evaluations")
 @Data
@@ -23,7 +24,7 @@ public class EvaluationDocument {
 
     private boolean passed;
     private int score;
-    private long timeMs;
-    private long memoryMb;
+    private Map<FeedbackType, Integer> rubric;
+    private String justification;
     private Instant createdAt;
 }

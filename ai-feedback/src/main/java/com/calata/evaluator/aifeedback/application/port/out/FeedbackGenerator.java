@@ -1,8 +1,9 @@
 package com.calata.evaluator.aifeedback.application.port.out;
 
-import com.calata.evaluator.aifeedback.domain.model.Feedback;
-import java.util.List;
+import com.calata.evaluator.aifeedback.domain.model.FeedbackAggregate;
+
 
 public interface FeedbackGenerator {
-    List<Feedback> generate(String language, String code);
+    FeedbackAggregate generateWithScore(String language, String code, String stdout, String stderr,
+            long timeMs, long memoryMb);
 }

@@ -4,5 +4,9 @@ public record ProcessAIFeedbackRequestedCommand(
         String evaluationId,
         String submissionId,
         String language,
-        String code
+        String code,
+        String stdout,
+        String stderr,
+        long timeMs,
+        long memoryMb
 ) { }

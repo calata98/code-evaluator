@@ -2,13 +2,13 @@ package com.calata.evaluator.aifeedback.application.service;
 
 import com.calata.evaluator.aifeedback.application.command.ProcessAIFeedbackRequestedCommand;
 import com.calata.evaluator.aifeedback.application.port.in.HandleAIFeedbackRequestedUseCase;
-import com.calata.evaluator.aifeedback.application.port.out.*;
-import com.calata.evaluator.aifeedback.domain.model.*;
+import com.calata.evaluator.aifeedback.application.port.out.FeedbackCreatedPublisher;
+import com.calata.evaluator.aifeedback.application.port.out.FeedbackGenerator;
+import com.calata.evaluator.aifeedback.application.port.out.FeedbackWriter;
+import com.calata.evaluator.aifeedback.domain.model.Feedback;
 import com.calata.evaluator.aifeedback.domain.service.FeedbackSynthesisService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.calata.evaluator.contracts.events.FeedbackCreated;
 
 import java.util.*;
 
@@ -33,12 +33,12 @@ public class AIFeedbackAppService implements HandleAIFeedbackRequestedUseCase {
     @Override
     @Transactional
     public void handle(ProcessAIFeedbackRequestedCommand cmd) {
-        if (writer.existsForEvaluation(cmd.evaluationId())) return; // idempotencia
+        if (writer.existsForEvaluation(cmd.evaluationId())) return;
 
-        var raw = generator.generate(cmd.language(), cmd.code());
-        List<Feedback> validated = synthesis.validateAndNormalize(raw);
+        var raw = generator.generateWithScore(cmd.language(), cmd.code(), cmd.stderr(), cmd.stdout(), cmd.timeMs(), cmd.memoryMb());
+        List<Feedback> validated = synthesis.validateAndNormalize(raw.items());
 
         var saved = writer.saveAll(cmd.evaluationId(), validated);
-        publisher.publish(cmd.evaluationId(), cmd.submissionId(), saved);
+        publisher.publish(cmd.evaluationId(), cmd.submissionId(), saved, raw.score(), raw.rubric(), raw.justification());
     }
 }

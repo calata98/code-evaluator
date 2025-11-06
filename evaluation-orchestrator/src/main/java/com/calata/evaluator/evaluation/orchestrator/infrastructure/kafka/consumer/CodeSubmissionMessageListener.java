@@ -1,6 +1,6 @@
 package com.calata.evaluator.evaluation.orchestrator.infrastructure.kafka.consumer;
 
-import com.calata.evaluator.contracts.events.CodeSubmissionMessage;
+import com.calata.evaluator.contracts.events.SubmissionCreated;
 import com.calata.evaluator.evaluation.orchestrator.application.command.ProcessCodeSubmissionCommand;
 import com.calata.evaluator.evaluation.orchestrator.application.port.in.HandleCodeSubmissionUseCase;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,7 +16,7 @@ public class CodeSubmissionMessageListener {
     }
 
     @KafkaListener(topics = "${app.kafka.topics.submissions}", groupId = "submission-group")
-    public void onMessage(CodeSubmissionMessage msg){
+    public void onMessage(SubmissionCreated msg){
         useCase.handle(new ProcessCodeSubmissionCommand(
                 msg.id(), msg.code(), msg.language(), msg.userId()
         ));

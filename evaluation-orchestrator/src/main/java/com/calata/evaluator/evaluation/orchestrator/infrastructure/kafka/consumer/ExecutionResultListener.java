@@ -3,7 +3,6 @@ package com.calata.evaluator.evaluation.orchestrator.infrastructure.kafka.consum
 import com.calata.evaluator.contracts.events.ExecutionResult;
 import com.calata.evaluator.evaluation.orchestrator.application.command.ProcessExecutionResultCommand;
 import com.calata.evaluator.evaluation.orchestrator.application.port.in.HandleExecutionResultUseCase;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ public class ExecutionResultListener {
     }
 
     @KafkaListener(topics = "${app.kafka.topics.executionResults}", groupId = "evaluation-orchestrator")
-    public void onMessage(ExecutionResult msg) throws Exception {
+    public void onMessage(ExecutionResult msg){
         useCase.handle(new ProcessExecutionResultCommand(
                 msg.submissionId(),
                 msg.stdout(), msg.stderr(),

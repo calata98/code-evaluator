@@ -7,7 +7,6 @@ import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 
 public class JwksService {
@@ -22,13 +21,9 @@ public class JwksService {
         this.jwkSet = new JWKSet(rsaPublicJwk);
     }
 
-    public JwksService(List<String> publicPems) {
-        List<JWK> keys = publicPems.stream().map(JwksService::buildRsaPublicJwk).map(j -> (JWK) j).toList();
-        this.jwkSet = new JWKSet(keys);
-        this.kid = keys.isEmpty() ? null : keys.get(0).getKeyID();
+    public String kid() {
+        return kid;
     }
-
-    public String kid() { return kid; }
 
     public Map<String, Object> jwksJsonObject() {
         return jwkSet.toJSONObject();

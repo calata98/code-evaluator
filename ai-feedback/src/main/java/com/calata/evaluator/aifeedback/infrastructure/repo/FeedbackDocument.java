@@ -1,7 +1,5 @@
 package com.calata.evaluator.aifeedback.infrastructure.repo;
 
-import com.calata.evaluator.aifeedback.domain.model.FeedbackType;
-import com.calata.evaluator.contracts.events.Severity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

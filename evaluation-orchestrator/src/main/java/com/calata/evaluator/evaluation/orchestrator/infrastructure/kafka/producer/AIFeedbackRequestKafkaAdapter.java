@@ -19,9 +19,10 @@ public class AIFeedbackRequestKafkaAdapter implements AIFeedbackRequestedPublish
     }
 
     @Override
-    public void publish(String evaluationId, String submissionId, String language, String code) {
+    public void publish(String evaluationId, String submissionId, String language, String code, String stdout,
+            String stderr, long timeMs, long memoryMb) {
         var event = new AIFeedbackRequested(
-                evaluationId, submissionId, language, code, null, null
+                evaluationId, submissionId, language, code, null, null, stdout, stderr, timeMs, memoryMb
         );
         kafkaTemplate.send(topics.aiFeedbackRequested(), evaluationId, event);
     }

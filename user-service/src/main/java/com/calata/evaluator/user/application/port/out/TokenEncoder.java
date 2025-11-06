@@ -6,7 +6,6 @@ import java.time.Instant;
 
 public interface TokenEncoder {
     String encode(User user, Instant expiresAt);
-    boolean isValid(String token);
-    String subject(String token); // userId
+    boolean notValid(String token);
     Instant expiresAt(String token);
 }

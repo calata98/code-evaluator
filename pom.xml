@@ -23,6 +23,8 @@
         <module>executor-service</module>
         <module>ai-feedback</module>
         <module>user-service</module>
+        <module>similarity-service</module>
+        <module>authorship-service</module>
     </modules>
 
     <properties>

@@ -31,23 +31,32 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest req){
         var user = registerUC.register(new RegisterUserCommand(
-                req.email, req.password, WebMappers.toRole(req.role)
+                req.email(), req.password(), WebMappers.toRole(req.role())
         ));
         return ResponseEntity.status(201).body(WebMappers.toUserResponse(user));
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest req){
-        var tokens = loginUC.login(new LoginCommand(req.email, req.password));
+        var tokens = loginUC.login(new LoginCommand(req.email(), req.password()));
         return ResponseEntity.ok(new TokenResponse(tokens.accessToken()));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody(required = false) LogoutRequest body,
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String auth){
-        String token = (body != null && body.token != null) ? body.token
-                : (auth != null && auth.startsWith("Bearer ") ? auth.substring(7) : null);
-        if (token == null) return ResponseEntity.badRequest().build();
+
+        String token = null;
+
+        if (body != null && body.token() != null) {
+            token = body.token();
+        } else if (auth != null && auth.startsWith("Bearer ")) {
+            token = auth.substring(7);
+        }
+
+        if (token == null) {
+            return ResponseEntity.badRequest().build();
+        }
         logoutUC.logout(new LogoutCommand(token));
         return ResponseEntity.noContent().build();
     }

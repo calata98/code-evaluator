@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: authorship-service
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    consumer:
+      group-id: ${SPRING_KAFKA_GROUP_ID:authorship-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.calata.evaluator.contracts.*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-4o-mini
+
+server:
+  port: ${SERVER_PORT:8092}
+
+app:
+  kafka:
+    topics:
+      similarityComputed: similarity-computed
+      authorshipAnswersProvided: authorship-answers-provided
+      authorshipTestCreated: authorship-test-created
+      authorshipResultComputed: authorship-result-computed

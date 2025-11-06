@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "app.kafka.topics")
 public class KafkaTopicsProps {
     private String submissions;
+    private String submissionStatus;
     private String executionRequests;
     private String executionResults;
 }

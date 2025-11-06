@@ -12,27 +12,12 @@ public class SubmissionClientConfig {
 
     @Bean
     WebClient submissionWebClient(
-            @Value("${app.submission.base-url}") String baseUrl,
-            @Value("${app.api.key}") String apiKey
+            @Value("${SUBMISSIONS_BASE_URL:http://localhost:8080}") String baseUrl,
+            @Value("${INTERNAL_API_KEY}") String apiKey
     ) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader("X-Internal-Api-Key", apiKey)
-                .filter(logErrors())
                 .build();
-    }
-
-    private ExchangeFilterFunction logErrors() {
-        return ExchangeFilterFunction.ofResponseProcessor(resp -> {
-            if (resp.statusCode().isError()) {
-                return resp.bodyToMono(String.class)
-                        .defaultIfEmpty("<empty>")
-                        .flatMap(body -> {
-                            System.err.println("WebClient ERROR " + resp.statusCode() + " body=" + body);
-                            return resp.createException().flatMap(Mono::error);
-                        });
-            }
-            return Mono.just(resp);
-        });
     }
 }

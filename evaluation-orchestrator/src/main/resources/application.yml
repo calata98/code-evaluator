@@ -41,12 +41,8 @@ app:
       executionResults: ${APP_TOPICS_EXEC_RES:execution-results}
       evaluationCreated: ${APP_TOPICS_EVAL_CREATED:evaluation-created}
       aiFeedbackRequested: ${APP_TOPICS_AI_FEEDBACK:feedback-requests}
+      aiFeedbackCreated: ${APP_TOPICS_AI_FEEDBACK_CREATED:feedback-created}
   submission-api:
     base-url: ${SUBMISSION_API_BASE_URL:http://localhost:8080}
-  api:
-    key: ${INTERNAL_API_KEY}
-  submission:
-    base-url: ${SUBMISSION_SERVICE_BASE_URL:http://localhost:8080}
-  limits:
     defaultTimeLimitMs: ${APP_LIMITS_TIME_MS:5000}
     defaultMemoryMb: ${APP_LIMITS_MEM_MB:512}

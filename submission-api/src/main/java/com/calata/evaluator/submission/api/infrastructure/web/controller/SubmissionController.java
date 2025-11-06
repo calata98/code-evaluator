@@ -8,6 +8,7 @@ import com.calata.evaluator.submission.api.application.command.UpdateSubmissionS
 import com.calata.evaluator.submission.api.application.port.in.CreateSubmissionUseCase;
 import com.calata.evaluator.submission.api.application.port.in.GetSubmissionUseCase;
 import com.calata.evaluator.submission.api.application.port.in.UpdateSubmissionStatusUseCase;
+import com.calata.evaluator.submission.api.infrastructure.web.dto.SubmissionIdResponse;
 import com.calata.evaluator.submission.api.infrastructure.web.dto.SubmissionRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
     @RequestMapping("/submissions")
@@ -43,21 +43,21 @@ import java.util.Map;
         }
 
         @PostMapping
-        public ResponseEntity<String> create(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody SubmissionRequest req) {
+        public ResponseEntity<SubmissionIdResponse> create(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody SubmissionRequest req) {
             String userId = jwt.getSubject();
             var submissionCommand = new CreateSubmissionCommand(
                     userId, req.title(), req.code(), req.language()
             );
             var id = createSubmission.handle(submissionCommand);
-            return ResponseEntity.accepted().body(Map.of("submissionId", id).toString());
+            return ResponseEntity.accepted().body(new SubmissionIdResponse(id));
         }
 
         @PutMapping("/status")
-        public ResponseEntity<String> updateStatus(@RequestBody UpdateSubmissionStatus req) {
+        public ResponseEntity<SubmissionIdResponse> updateStatus(@RequestBody UpdateSubmissionStatus req) {
             var cmd = new UpdateSubmissionStatusCommand(
                     req.submissionId(), req.status()
             );
             var id = updateSubmissionStatus.updateSubmissionStatus(cmd.submissionId(), cmd.status());
-            return ResponseEntity.accepted().body(Map.of("submissionId", id).toString());
+            return ResponseEntity.accepted().body(new SubmissionIdResponse(id));
         }
     }

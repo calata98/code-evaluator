@@ -6,6 +6,7 @@ public interface SubmissionReader {
     record SubmissionSnapshot(
             String id,
             String language,
-            String code
+            String code,
+            String userId
     ) {}
 }

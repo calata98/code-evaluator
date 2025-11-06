@@ -4,4 +4,5 @@ import com.calata.evaluator.submission.api.domain.model.Submission;
 
 public interface SubmissionEventsPublisher {
     void publishCodeSubmission(Submission submission);
+    void publishSubmissionStatusUpdated(Submission submission);
 }

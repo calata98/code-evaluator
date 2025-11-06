@@ -8,5 +8,9 @@ public record AIFeedbackRequested(
         String code,
         String language,
         List<String> types,
-        Integer maxItemsPerType
+        Integer maxItemsPerType,
+        String stdout,
+        String stderr,
+        long timeMs,
+        long memoryMb
 ) {}

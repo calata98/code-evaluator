@@ -17,8 +17,7 @@ public class AIFeedbackRequestedListener {
 
     @KafkaListener(topics = "${app.kafka.topics.feedbackRequested}", groupId = "ai-feedback-group")
     public void onMessage(AIFeedbackRequested msg){
-        System.out.println("Received AI Feedback Requested event for Evaluation ID: " + msg.evaluationId());
         useCase.handle(new ProcessAIFeedbackRequestedCommand(
-                msg.evaluationId(), msg.submissionId(), msg.language(), msg.code()));
+                msg.evaluationId(), msg.submissionId(), msg.language(), msg.code(), msg.stdout(), msg.stderr(), msg.timeMs(), msg.memoryMb()));
     }
 }

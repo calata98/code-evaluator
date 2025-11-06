@@ -6,5 +6,6 @@ public record SubmissionResponse(
         String language,
         String code,
         String status,
-        String createdAt
+        String createdAt,
+        String userId
 ) {}
