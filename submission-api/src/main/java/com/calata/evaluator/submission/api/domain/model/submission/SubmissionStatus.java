@@ -1,4 +1,4 @@
-package com.calata.evaluator.submission.api.domain.model;
+package com.calata.evaluator.submission.api.domain.model.submission;
 
 public enum SubmissionStatus {
     PENDING,

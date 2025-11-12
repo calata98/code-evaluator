@@ -9,8 +9,8 @@ import com.calata.evaluator.similarity.domain.model.SimilarityTypeDomain;
 import java.util.List;
 import java.util.Optional;
 
-public final class MongoMappers {
-    private MongoMappers() {}
+public final class Mappers {
+    private Mappers() {}
 
     // Fingerprint
     public static FingerprintDocument toDocument(Fingerprint fp) {
@@ -71,6 +71,7 @@ public final class MongoMappers {
                 sr.submissionId(),
                 sr.userId(),
                 sr.language(),
+                sr.code(),
                 toContractsType(sr.type()),
                 sr.score(),
                 sr.matchedSubmissionId(),

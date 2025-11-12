@@ -18,8 +18,8 @@ public class SimilarityComputedListener {
     @KafkaListener(topics = "${app.kafka.topics.similarityComputed}", groupId = "authorship-group")
     public void onMessage(SimilarityComputed evt) {
         var cmd = new ProcessSimilarityComputedCommand(
-                evt.submissionId(), evt.language(), evt.type().name(), evt.score(),
-                evt.matchedSubmissionId(), evt.createdAt(), null
+                evt.submissionId(), evt.userId(), evt.language(), evt.type().name(), evt.score(),
+                evt.matchedSubmissionId(), evt.createdAt(), evt.code()
         );
         useCase.handle(cmd);
     }

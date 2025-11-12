@@ -42,6 +42,7 @@ public class AuthorshipTestAppService implements HandleSimilarityComputedUseCase
 
         AuthorshipTest test = generator.generate(
                 cmd.submissionId(),
+                cmd.userId(),
                 cmd.language(),
                 codeForPrompt,
                 suspicion
@@ -50,13 +51,15 @@ public class AuthorshipTestAppService implements HandleSimilarityComputedUseCase
         var withExpiry = new AuthorshipTest(
                 test.testId(),
                 test.submissionId(),
+                test.userId(),
                 test.language(),
                 test.questions(),
                 test.createdAt() == null ? Instant.now() : test.createdAt(),
-                test.expiresAt() == null ? Instant.now().plus(Duration.ofHours(ttlHours)) : test.expiresAt()
+                test.expiresAt() == null ? Instant.now().plus(Duration.ofHours(ttlHours)) : test.expiresAt(),
+                test.answered()
         );
 
-        testWriter.save(withExpiry);
+        testWriter.save(withExpiry).block();
         publisher.publishAuthorshipTestCreated(withExpiry);
     }
 

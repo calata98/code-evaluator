@@ -7,7 +7,7 @@ import com.calata.evaluator.submission.api.application.port.in.UpdateSubmissionS
 import com.calata.evaluator.submission.api.application.port.out.SubmissionEventsPublisher;
 import com.calata.evaluator.submission.api.application.port.out.SubmissionReader;
 import com.calata.evaluator.submission.api.application.port.out.SubmissionWriter;
-import com.calata.evaluator.submission.api.domain.model.Submission;
+import com.calata.evaluator.submission.api.domain.model.submission.Submission;
 import com.calata.evaluator.contracts.dto.SubmissionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ class SubmissionService implements CreateSubmissionUseCase, UpdateSubmissionStat
     public String handle(CreateSubmissionCommand c){
         var submission = Submission.create(c.userId(), c.title(), c.code(), c.language());
 
-        events.publishCodeSubmission(submission);
+        events.publishSubmission(submission);
         submissionWriter.save(submission);
 
         return submission.getId();

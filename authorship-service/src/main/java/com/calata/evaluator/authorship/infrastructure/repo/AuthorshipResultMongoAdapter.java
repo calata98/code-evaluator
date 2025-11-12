@@ -5,11 +5,11 @@ import com.calata.evaluator.authorship.domain.model.AuthorshipResult;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthorshipResultWriterMongoAdapter implements AuthorshipResultWriter {
+public class AuthorshipResultMongoAdapter implements AuthorshipResultWriter {
 
     private final SpringDataAuthorshipResultRepository repo;
 
-    public AuthorshipResultWriterMongoAdapter(SpringDataAuthorshipResultRepository repo) {
+    public AuthorshipResultMongoAdapter(SpringDataAuthorshipResultRepository repo) {
         this.repo = repo;
     }
 

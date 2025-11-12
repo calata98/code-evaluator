@@ -8,6 +8,7 @@ public record SimilarityComputed(
         String submissionId,
         String userId,
         String language,
+        String code,
         SimilarityType type,
         double score,
         String matchedSubmissionId,

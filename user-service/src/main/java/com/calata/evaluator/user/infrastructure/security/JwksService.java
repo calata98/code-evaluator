@@ -10,41 +10,15 @@ import java.util.Base64;
 import java.util.Map;
 
 public class JwksService {
+    private final RSAKey publicJwk;
 
-    private final JWKSet jwkSet;
-    private final String kid;
-
-
-    public JwksService(String publicPem) {
-        RSAKey rsaPublicJwk = buildRsaPublicJwk(publicPem);
-        this.kid = rsaPublicJwk.getKeyID();
-        this.jwkSet = new JWKSet(rsaPublicJwk);
+    public JwksService(RSAKey publicJwk) {
+        this.publicJwk = publicJwk;
     }
 
-    public String kid() {
-        return kid;
-    }
+    public String kid() { return publicJwk.getKeyID(); }
 
-    public Map<String, Object> jwksJsonObject() {
-        return jwkSet.toJSONObject();
-    }
-
-    private static RSAKey buildRsaPublicJwk(String publicPem) {
-        try {
-            String body = publicPem.replace("-----BEGIN PUBLIC KEY-----","")
-                    .replace("-----END PUBLIC KEY-----","")
-                    .replaceAll("\\s","");
-            byte[] der = Base64.getDecoder().decode(body);
-            var pub = (RSAPublicKey) KeyFactory.getInstance("RSA")
-                    .generatePublic(new X509EncodedKeySpec(der));
-
-            return new RSAKey.Builder(pub)
-                    .keyUse(KeyUse.SIGNATURE)
-                    .algorithm(JWSAlgorithm.RS256)
-                    .keyIDFromThumbprint()
-                    .build();
-        } catch (Exception e) {
-            throw new IllegalStateException("Invalid RSA public key (PEM)", e);
-        }
+    public Map<String,Object> jwksJsonObject() {
+        return new JWKSet(publicJwk).toJSONObject(); // keys:[{kty:"RSA", kid:"..."}]
     }
 }

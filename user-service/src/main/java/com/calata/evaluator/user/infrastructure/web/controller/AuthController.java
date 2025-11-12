@@ -10,9 +10,12 @@ import com.calata.evaluator.user.application.port.out.UserReader;
 import com.calata.evaluator.user.infrastructure.web.dto.*;
 import com.calata.evaluator.user.infrastructure.web.mapper.WebMappers;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -39,7 +42,16 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest req){
         var tokens = loginUC.login(new LoginCommand(req.email(), req.password()));
-        return ResponseEntity.ok(new TokenResponse(tokens.accessToken()));
+        ResponseCookie cookie = ResponseCookie.from("ACCESS_TOKEN", tokens.accessToken())
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("None")
+                .path("/")
+                .maxAge(Duration.ofHours(4))
+                .build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new TokenResponse(tokens.accessToken()));
     }
 
     @PostMapping("/logout")

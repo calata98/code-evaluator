@@ -1,8 +1,8 @@
 package com.calata.evaluator.submission.api;
 
-import com.calata.evaluator.submission.api.infrastructure.kafka.KafkaTopicsProps;
+import com.calata.evaluator.submission.api.infrastructure.config.KafkaTopicsProps;
 import com.calata.evaluator.submission.api.infrastructure.repo.SpringDataSubmissionRepository;
-import com.calata.evaluator.submission.api.readmodel.repo.SubmissionDetailViewRepository;
+import com.calata.evaluator.submission.api.infrastructure.repo.SubmissionDetailViewRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

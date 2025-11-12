@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -28,11 +29,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -76,13 +74,16 @@ public class AuthServerConfig {
 
     // Cors
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    CorsConfigurationSource corsConfigurationSource(
+            @Value("${app.front-origin}") String frontOrigin
+    ) {
         var cfg = new CorsConfiguration();
-        cfg.setAllowedOriginPatterns(java.util.List.of("http://localhost:*", "http://127.0.0.1:*"));
-        cfg.setAllowedMethods(java.util.List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(java.util.List.of("*"));
-        cfg.setExposedHeaders(java.util.List.of("Authorization"));
+        cfg.setAllowedOrigins(List.of(frontOrigin));
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Last-Event-ID"));
+        cfg.setExposedHeaders(List.of("Content-Type","Cache-Control"));
         cfg.setAllowCredentials(true);
+        cfg.setMaxAge(3600L);
 
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
@@ -109,25 +110,9 @@ public class AuthServerConfig {
 
     // JWT Source
     @Bean
-    JWKSource<SecurityContext> jwkSource() {
-        var keyPair = generateRsaKey();
-        var publicKey = (RSAPublicKey) keyPair.getPublic();
-        var privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        var rsaKey = new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
-                .build();
-        var jwkSet = new JWKSet(rsaKey);
+    public JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) {
+        var jwkSet = new JWKSet(rsaKey); // usa tu clave PEM + kid
         return (selector, ctx) -> selector.select(jwkSet);
     }
 
-    private static KeyPair generateRsaKey() {
-        try {
-            var g = KeyPairGenerator.getInstance("RSA");
-            g.initialize(2048);
-            return g.generateKeyPair();
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
 }

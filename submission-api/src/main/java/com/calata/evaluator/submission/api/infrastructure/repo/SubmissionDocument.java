@@ -1,7 +1,7 @@
 package com.calata.evaluator.submission.api.infrastructure.repo;
 
 import com.calata.evaluator.contracts.types.Language;
-import com.calata.evaluator.submission.api.domain.model.SubmissionStatus;
+import com.calata.evaluator.submission.api.domain.model.submission.SubmissionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

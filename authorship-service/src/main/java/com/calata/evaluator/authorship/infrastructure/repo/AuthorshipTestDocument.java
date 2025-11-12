@@ -13,10 +13,12 @@ public class AuthorshipTestDocument {
     @Id
     private String testId;
     private String submissionId;
+    private String userId;
     private String language;
     private List<QuestionDoc> questions;
     private Instant createdAt;
     private Instant expiresAt;
+    private boolean answered;
 
     @Data
     public static class QuestionDoc {

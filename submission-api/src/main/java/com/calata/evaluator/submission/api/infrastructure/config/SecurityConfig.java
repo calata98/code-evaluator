@@ -1,11 +1,14 @@
 package com.calata.evaluator.submission.api.infrastructure.config;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -31,9 +34,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/submissions/*").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/submissions/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/sse").authenticated()
+                        .requestMatchers("/authorship/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(oauth -> oauth
+                        .bearerTokenResolver(bearerTokenResolver())
+                        .jwt(Customizer.withDefaults())
+                );
 
         http.addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -46,12 +54,37 @@ public class SecurityConfig {
         var conf = new CorsConfiguration();
         conf.setAllowedOrigins(List.of(frontOrigin));
         conf.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        conf.setAllowedHeaders(List.of("Authorization","Content-Type","X-Requested-With","X-Internal-Api-Key"));
+        conf.setAllowedHeaders(List.of(
+                "Authorization","Content-Type","Accept","Last-Event-ID","X-Requested-With","X-Internal-Api-Key"
+        ));
+        conf.setExposedHeaders(List.of("Content-Type", "Cache-Control"));
         conf.setMaxAge(3600L);
         conf.setAllowCredentials(false);
 
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", conf);
         return source;
+    }
+
+    @Bean
+    public BearerTokenResolver bearerTokenResolver() {
+        DefaultBearerTokenResolver delegate = new DefaultBearerTokenResolver();
+
+        return request -> {
+            // Authorization header
+            String token = delegate.resolve(request);
+            if (token != null) return token;
+
+            // ACCESS_TOKEN
+            var cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie c : cookies) {
+                    if ("ACCESS_TOKEN".equals(c.getName()) && c.getValue() != null && !c.getValue().isBlank()) {
+                        return c.getValue();
+                    }
+                }
+            }
+            return null;
+        };
     }
 }

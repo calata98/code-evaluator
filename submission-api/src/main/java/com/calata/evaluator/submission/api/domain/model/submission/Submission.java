@@ -1,4 +1,4 @@
-package com.calata.evaluator.submission.api.domain.model;
+package com.calata.evaluator.submission.api.domain.model.submission;
 
 import com.calata.evaluator.contracts.types.Language;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.time.Instant;
 import java.util.UUID;
 
-import static com.calata.evaluator.submission.api.domain.model.SubmissionStatus.PENDING;
+import static com.calata.evaluator.submission.api.domain.model.submission.SubmissionStatus.PENDING;
 
 @AllArgsConstructor
 @Getter

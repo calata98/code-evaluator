@@ -1,4 +1,4 @@
-package com.calata.evaluator.submission.api.infrastructure.kafka;
+package com.calata.evaluator.submission.api.infrastructure.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -15,6 +15,6 @@ public class SimilarityResultWriterMongoAdapter implements SimilarityResultWrite
 
     @Override
     public void save(SimilarityResult result) {
-        repo.save(MongoMappers.toDocument(result));
+        repo.save(Mappers.toDocument(result));
     }
 }

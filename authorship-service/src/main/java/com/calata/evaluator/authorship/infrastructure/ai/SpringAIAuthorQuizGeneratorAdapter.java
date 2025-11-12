@@ -26,7 +26,7 @@ public class SpringAIAuthorQuizGeneratorAdapter implements AITestGenerator {
     }
 
     @Override
-    public AuthorshipTest generate(String submissionId, String language, String truncatedCode, String suspicionSummary) {
+    public AuthorshipTest generate(String submissionId, String userId, String language, String truncatedCode, String suspicionSummary) {
         String content = chat.prompt()
                 .system(PromptTemplates.QUIZ_SYSTEM)
                 .user(PromptTemplates.quizUser(language, truncatedCode, suspicionSummary))
@@ -63,19 +63,23 @@ public class SpringAIAuthorQuizGeneratorAdapter implements AITestGenerator {
             return new AuthorshipTest(
                     UUID.randomUUID().toString(),
                     submissionId,
+                    userId,
                     language,
                     qs,
                     Instant.now(),
-                    Instant.now().plus(Duration.ofHours(48))
+                    Instant.now().plus(Duration.ofHours(48)),
+                    false
             );
         } catch (Exception e) {
             return new AuthorshipTest(
                     UUID.randomUUID().toString(),
                     submissionId,
+                    userId,
                     language,
                     List.of(),
                     Instant.now(),
-                    Instant.now().plus(Duration.ofHours(48))
+                    Instant.now().plus(Duration.ofHours(48)),
+                    false
             );
         }
 

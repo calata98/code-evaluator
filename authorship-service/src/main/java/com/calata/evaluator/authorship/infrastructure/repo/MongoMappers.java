@@ -18,6 +18,7 @@ public final class MongoMappers {
         var d = new AuthorshipTestDocument();
         d.setTestId(t.testId());
         d.setSubmissionId(t.submissionId());
+        d.setUserId(t.userId());
         d.setLanguage(t.language());
         d.setQuestions(t.questions().stream().map(q -> {
             var qd = new AuthorshipTestDocument.QuestionDoc();
@@ -26,6 +27,7 @@ public final class MongoMappers {
         }).collect(Collectors.toList()));
         d.setCreatedAt(t.createdAt());
         d.setExpiresAt(t.expiresAt());
+        d.setAnswered(t.answered());
         return d;
     }
 
@@ -33,12 +35,14 @@ public final class MongoMappers {
         return new AuthorshipTest(
                 d.getTestId(),
                 d.getSubmissionId(),
+                d.getUserId(),
                 d.getLanguage(),
                 d.getQuestions().stream().map(qd ->
                         new AuthorshipQuestion(qd.getId(), qd.getPrompt(), qd.getChoices(), qd.getCorrectIndexHint())
                 ).toList(),
                 d.getCreatedAt(),
-                d.getExpiresAt()
+                d.getExpiresAt(),
+                d.isAnswered()
         );
     }
 

@@ -14,23 +14,30 @@ spring:
         spring.json.trusted.packages: 'com.calata.evaluator.contracts.*'
   data:
     mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeevaluator}
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
   security:
     oauth2:
       resourceserver:
         jwt:
-          public-key-location: classpath:jwt_public.pem
+          jwk-set-uri: http://localhost:8088/.well-known/jwks.json
 
 server:
   port: ${SERVER_PORT:8080}
+
 
 app:
   kafka:
     topics:
       submissions: ${APP_TOPICS_SUBMISSIONS:submissions}
       submissionStatus: ${APP_TOPICS_SUBMISSION_STATUS:submission-status}
+      authorshipTestCreated: authorship-test-created
 internal:
   api:
     key: ${INTERNAL_API_KEY}
 front:
   origin: ${FRONT_ORIGIN:http://localhost:5173}
+services:
+  submissions:
+    base-url: ${SUBMISSIONS_API:http://submission-api:8080}
+  authorship:
+    base-url: ${AUTHORSHIP_API:http://authorship-service:8092}

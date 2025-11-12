@@ -1,8 +1,8 @@
 package com.calata.evaluator.submission.api.application.port.out;
 
-import com.calata.evaluator.submission.api.domain.model.Submission;
+import com.calata.evaluator.submission.api.domain.model.submission.Submission;
 
 public interface SubmissionEventsPublisher {
-    void publishCodeSubmission(Submission submission);
+    void publishSubmission(Submission submission);
     void publishSubmissionStatusUpdated(Submission submission);
 }

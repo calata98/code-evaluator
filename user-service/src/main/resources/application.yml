@@ -11,10 +11,11 @@ server:
 
 app:
   issuer: "http://localhost:8088"
+  front-origin: ${FRONT_ORIGIN:http://localhost:5173}
 
 security:
   jwt:
-    issuer: "user-auth-service"
+    issuer: ${app.issuer}
     accessMinutes: 30
     privatePemPath: "${JWT_PRIVATE_PATH:}"
     publicPemPath:  "${JWT_PUBLIC_PATH:}"

@@ -6,6 +6,7 @@ public record SimilarityResult(
         String submissionId,
         String userId,
         String language,
+        String code,
         SimilarityTypeDomain type,
         double score,
         String matchedSubmissionId,

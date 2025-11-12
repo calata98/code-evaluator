@@ -1,9 +1,10 @@
 package com.calata.evaluator.authorship.infrastructure.repo;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
-public interface SpringDataAuthorshipTestRepository extends MongoRepository<AuthorshipTestDocument, String> {
-    Optional<AuthorshipTestDocument> findBySubmissionId(String submissionId);
+@Repository
+public interface SpringDataAuthorshipTestRepository extends ReactiveMongoRepository<AuthorshipTestDocument, String> {
+    Mono<AuthorshipTestDocument> findBySubmissionId(String submissionId);
 }

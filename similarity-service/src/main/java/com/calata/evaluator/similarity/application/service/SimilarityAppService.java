@@ -62,7 +62,7 @@ public class SimilarityAppService implements HandleEvaluationCompletedUseCase {
                 .filter(fingerprint -> !fingerprint.submissionId().equals(fp.submissionId()));
         if (exact.isPresent()) {
             SimilarityResult res = new SimilarityResult(
-                    fp.submissionId(), fp.userId(), fp.language(),
+                    fp.submissionId(), fp.userId(), fp.language(), cmd.code(),
                     SimilarityTypeDomain.EXACT, 1.0, exact.get().submissionId(), Instant.now());
             persistAndPublish(res);
             return;
@@ -73,7 +73,7 @@ public class SimilarityAppService implements HandleEvaluationCompletedUseCase {
                 .filter(doc -> !doc.submissionId().equals(fp.submissionId()));
         if (norm.isPresent()) {
             SimilarityResult res = new SimilarityResult(
-                    fp.submissionId(), fp.userId(), fp.language(),
+                    fp.submissionId(), fp.userId(), fp.language(), cmd.code(),
                     SimilarityTypeDomain.NORMALIZED, 0.98, norm.get().submissionId(), Instant.now());
             persistAndPublish(res);
             return;
@@ -93,12 +93,12 @@ public class SimilarityAppService implements HandleEvaluationCompletedUseCase {
 
         if (bestScore >= nearStrong) {
             SimilarityResult res = new SimilarityResult(
-                    fp.submissionId(), fp.userId(), fp.language(),
+                    fp.submissionId(), fp.userId(), fp.language(), cmd.code(),
                     SimilarityTypeDomain.NEAR, bestScore, bestId, Instant.now());
             persistAndPublish(res);
         } else {
             SimilarityResult res = new SimilarityResult(
-                    fp.submissionId(), fp.userId(), fp.language(),
+                    fp.submissionId(), fp.userId(), fp.language(), cmd.code(),
                     SimilarityTypeDomain.NONE, 0.0, null, Instant.now());
             persistAndPublish(res);
         }

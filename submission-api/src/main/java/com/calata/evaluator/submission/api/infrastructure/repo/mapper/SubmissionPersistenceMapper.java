@@ -1,6 +1,6 @@
 package com.calata.evaluator.submission.api.infrastructure.repo.mapper;
 
-import com.calata.evaluator.submission.api.domain.model.Submission;
+import com.calata.evaluator.submission.api.domain.model.submission.Submission;
 import com.calata.evaluator.submission.api.infrastructure.repo.SubmissionDocument;
 
 public final class SubmissionPersistenceMapper {

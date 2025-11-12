@@ -1,4 +1,4 @@
-package com.calata.evaluator.submission.api.readmodel.model;
+package com.calata.evaluator.submission.api.domain.model.summary;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

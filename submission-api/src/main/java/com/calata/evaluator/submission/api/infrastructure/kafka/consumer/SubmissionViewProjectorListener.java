@@ -1,15 +1,15 @@
-package com.calata.evaluator.submission.api.readmodel.projection;
+package com.calata.evaluator.submission.api.infrastructure.kafka.consumer;
 
 import com.calata.evaluator.contracts.events.AIFeedbackCreated;
 import com.calata.evaluator.contracts.events.EvaluationCreated;
 import com.calata.evaluator.contracts.events.SubmissionCreated;
 import com.calata.evaluator.contracts.events.SubmissionStatusUpdated;
-import com.calata.evaluator.submission.api.domain.model.SubmissionStatus;
-import com.calata.evaluator.submission.api.readmodel.model.EvaluationView;
-import com.calata.evaluator.submission.api.readmodel.model.FeedbackItem;
-import com.calata.evaluator.submission.api.readmodel.model.SubmissionDetailViewDocument;
-import com.calata.evaluator.submission.api.readmodel.model.SubmissionSummary;
-import com.calata.evaluator.submission.api.readmodel.repo.SubmissionDetailViewRepository;
+import com.calata.evaluator.submission.api.domain.model.submission.SubmissionStatus;
+import com.calata.evaluator.submission.api.domain.model.summary.EvaluationView;
+import com.calata.evaluator.submission.api.domain.model.summary.FeedbackItem;
+import com.calata.evaluator.submission.api.domain.model.summary.SubmissionDetailViewDocument;
+import com.calata.evaluator.submission.api.domain.model.summary.SubmissionSummary;
+import com.calata.evaluator.submission.api.infrastructure.repo.SubmissionDetailViewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class SubmissionViewProjector {
+public class SubmissionViewProjectorListener {
 
     private final SubmissionDetailViewRepository repo;
 

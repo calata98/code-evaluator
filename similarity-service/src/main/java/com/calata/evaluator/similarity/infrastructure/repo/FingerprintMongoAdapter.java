@@ -20,17 +20,17 @@ public class FingerprintMongoAdapter implements FingerprintWriter, FingerprintRe
 
     @Override
     public void upsert(Fingerprint fp) {
-        repo.save(MongoMappers.toDocument(fp));
+        repo.save(Mappers.toDocument(fp));
     }
 
     @Override
     public Optional<Fingerprint> findByShaRaw(String shaRaw) {
-        return MongoMappers.fingerprintToDomain(repo.findFirstByShaRaw(shaRaw));
+        return Mappers.fingerprintToDomain(repo.findFirstByShaRaw(shaRaw));
     }
 
     @Override
     public Optional<Fingerprint> findByShaNorm(String shaNorm) {
-        return MongoMappers.fingerprintToDomain(repo.findFirstByShaNorm(shaNorm));
+        return Mappers.fingerprintToDomain(repo.findFirstByShaNorm(shaNorm));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class FingerprintMongoAdapter implements FingerprintWriter, FingerprintRe
         int min = (int)Math.floor(lineCount * (1.0 - tolerance));
         int max = (int)Math.ceil(lineCount * (1.0 + tolerance));
         var list = repo.findByLangAndCountBetween(lang, min, max, Sort.by(Sort.Direction.DESC, "createdAt"));
-        var mapped = MongoMappers.fingerprintsToDomain(list);
+        var mapped = Mappers.fingerprintsToDomain(list);
         return mapped.size() > limit ? mapped.subList(0, limit) : mapped;
     }
 }

@@ -1,4 +1,4 @@
-package com.calata.evaluator.submission.api.readmodel.model;
+package com.calata.evaluator.submission.api.domain.model.summary;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

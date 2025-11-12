@@ -2,8 +2,8 @@ package com.calata.evaluator.submission.api.infrastructure.repo;
 
 import com.calata.evaluator.submission.api.application.port.out.SubmissionReader;
 import com.calata.evaluator.submission.api.application.port.out.SubmissionWriter;
-import com.calata.evaluator.submission.api.domain.model.Submission;
-import com.calata.evaluator.submission.api.domain.model.SubmissionStatus;
+import com.calata.evaluator.submission.api.domain.model.submission.Submission;
+import com.calata.evaluator.submission.api.domain.model.submission.SubmissionStatus;
 import com.calata.evaluator.submission.api.infrastructure.repo.mapper.SubmissionPersistenceMapper;
 import com.mongodb.DuplicateKeyException;
 import org.springframework.stereotype.Service;

@@ -4,6 +4,7 @@ import java.time.Instant;
 
 public record ProcessSimilarityComputedCommand(
         String submissionId,
+        String userId,
         String language,
         String type,
         double score,

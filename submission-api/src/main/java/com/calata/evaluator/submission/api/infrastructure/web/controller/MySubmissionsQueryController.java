@@ -1,7 +1,7 @@
-package com.calata.evaluator.submission.api.readmodel.api;
+package com.calata.evaluator.submission.api.infrastructure.web.controller;
 
-import com.calata.evaluator.submission.api.readmodel.model.SubmissionDetailViewDocument;
-import com.calata.evaluator.submission.api.readmodel.repo.SubmissionDetailViewRepository;
+import com.calata.evaluator.submission.api.domain.model.summary.SubmissionDetailViewDocument;
+import com.calata.evaluator.submission.api.infrastructure.repo.SubmissionDetailViewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

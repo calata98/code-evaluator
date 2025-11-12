@@ -62,7 +62,7 @@ public class JwtTokenProvider implements TokenEncoder {
                 .parseSignedClaims(token).getPayload();
     }
 
-    private static PrivateKey readPrivateKeyFromPem(String pem) {
+    public static PrivateKey readPrivateKeyFromPem(String pem) {
         try {
             String pk = pem.replace("-----BEGIN PRIVATE KEY-----","")
                     .replace("-----END PRIVATE KEY-----","")
@@ -72,7 +72,7 @@ public class JwtTokenProvider implements TokenEncoder {
         } catch (Exception e) { throw new IllegalStateException("Bad private key", e); }
     }
 
-    private static PublicKey readPublicKeyFromPem(String pem) {
+    public static PublicKey readPublicKeyFromPem(String pem) {
         try {
             String pk = pem.replace("-----BEGIN PUBLIC KEY-----","")
                     .replace("-----END PUBLIC KEY-----","")
