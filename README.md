@@ -1,59 +1,179 @@
-# Code Evaluator
+# 🚀 Code Evaluator Platform
 
-A backend project designed to automatically evaluate programming exercises submitted by users. This first phase establishes a minimal working pipeline using Apache Kafka, laying the foundation for a future intelligent feedback system.
+**An Intelligent, Secure, Event‑Driven Backend for Automated Code
+Assessment**
 
-## 🎯 Objective
+------------------------------------------------------------------------
 
-The ultimate goal of this project is to build a backend platform that enables:
+## 🌐 Overview
 
-- ✅ Secure submission of programming exercises via a REST API.
+Code Evaluator is a fully decoupled, microservice‑based backend platform
+designed to automatically assess programming exercises.\
+It integrates secure sandbox execution, similarity detection, authorship
+verification, and AI‑generated feedback.
 
-- ⚙️ Execution of submitted code in isolated containers (Docker) to prevent malicious behavior.
+Originally developed as a Bachelor's Thesis project, it is now refined
+and production‑ready for professional use and portfolio presentation.
 
-- 🧠 Integration with AI-powered services to provide intelligent feedback on the submitted code, such as:
+------------------------------------------------------------------------
 
-  - Code quality suggestions
+## 🎯 Key Capabilities
 
-  - Logic errors or inefficiencies
+### 🔒 **Secure Code Execution**
 
-  - Best practices and improvement hints
+-   Docker‑isolated sandbox per execution
+-   Resource limits (memory, CPU, timeout)
+-   Read‑only filesystem & restricted capabilities
+-   Preventive protection against malicious code
 
-- 🗃 Storage of submissions, evaluations, and feedback in a database.
+### 🤖 **AI‑Powered Feedback**
 
-- 🔐 User authentication and access control via JWT.
+Generates multi‑dimensional feedback (style, complexity, best practices)
+using LLMs via **Spring AI**.
 
-## 🧰 Technologies Used
+### 🧬 **Similarity Detection**
 
-- Java 21
-- Spring Boot 3.2.6
-- Apache Kafka
-- Docker & Docker Compose
-- Maven
-- Lombok
+-   Token normalization\
+-   SHA‑256 hashing\
+-   SimHash 64‑bit\
+-   N‑grams for structural analysis\
+-   False‑positive rate \<5%
 
-## 📁 Project Structure
+### 👤 **Authorship Verification**
 
+Interactive quiz generated from patterns in the student's code to
+confirm authorship.
+
+### 📡 **Event‑Driven Orchestration**
+
+All processing is asynchronous and decoupled using **Apache Kafka**.
+
+### 🔐 **Authentication & Authorization**
+
+-   JWT auth\
+-   Role‑based access (Student / Teacher / Admin)
+
+------------------------------------------------------------------------
+
+## 🏗️ Architecture
+
+    code-evaluator/
+    ├── producer-api/                 # Public REST API for submissions
+    ├── submission-api/               # Submission lifecycle + SSE
+    ├── evaluation-orchestrator/      # Orchestrates all evaluation stages
+    ├── executor-service/             # Docker sandbox runner
+    ├── ai-feedback-service/          # AI feedback generator
+    ├── similarity-service/           # Code similarity detection
+    ├── authorship-service/           # Authorship verification tests
+    ├── user-service/                 # Users, roles, authentication
+    ├── contracts/                    # Shared Kafka event schemas
+    └── docker/                       # Kafka, MongoDB, microservice stack
+
+Designed using **Hexagonal Architecture** to ensure maintainability,
+testability, and clean separation of concerns.
+
+------------------------------------------------------------------------
+
+## 🔄 Evaluation Flow
+
+    [Submission] → Kafka → [Orchestrator]
+        → Execution Request → [Executor Service]
+        → Similarity Request → [Similarity Service]
+        → AI Feedback Request → [AI Feedback Service]
+        → Authorship Test → [Authorship Service]
+    → Results Persisted & Exposed via REST/SSE
+
+------------------------------------------------------------------------
+
+## 🧰 Tech Stack
+
+-   **Backend:** Java 21, Spring Boot 3.2\
+-   **Async Messaging:** Apache Kafka\
+-   **DB:** MongoDB\
+-   **Security:** Spring Security + JWT\
+-   **DevOps:** Docker, Docker Compose\
+-   **AI:** Spring AI + LLM integrations\
+-   **Testing:** JUnit 5, Mockito
+
+------------------------------------------------------------------------
+
+## 📦 Running the Platform
+
+``` bash
+docker compose --profile build-only up --build
 ```
-code-evaluator/
-├── producer-api/        # REST API to send code submissions to Kafka
-├── consumer-service/    # Kafka consumer that logs incoming messages
-├── docker/              # Docker Compose setup with Kafka and Zookeeper
-├── .gitignore
-└── README.md
-```
 
----
+All microservices, Kafka, MongoDB, and dependencies are launched
+automatically.
 
-## 📌 Next Steps
+------------------------------------------------------------------------
 
-- Implement code evaluation logic.
-- Store submissions and results in a database.
-- Add JWT authentication.
-- Provide intelligent feedback using AI.
+## 📌 Example Endpoints
 
----
+### Submissions
 
-## 🧠 Author & License
+    POST /submissions
+    GET /submissions/{id}
+    GET /submissions/{id}/events   # Real-time SSE
 
-Developed by Pablo Calatayud.  
-This project is currently under active development.
+### Auth
+
+    POST /login
+    POST /register
+
+### Teacher View
+
+    GET /teacher/submissions
+    GET /teacher/evaluations/{id}
+
+------------------------------------------------------------------------
+
+## 🧪 Testing Strategy
+
+-   Complete unit tests (services, commands, mappers)
+-   Integration tests for:
+    -   Kafka messaging\
+    -   Sandbox execution\
+    -   API endpoints\
+    -   MongoDB persistence\
+-   Test doubles for AI + execution layers
+
+------------------------------------------------------------------------
+
+## 📈 Why This Project Matters (for Employers)
+
+This project demonstrates:
+
+### ✔️ **Advanced Backend Engineering**
+
+Microservices, orchestration, event-driven design, DDD, and clean
+architecture.
+
+### ✔️ **Systems Thinking**
+
+Handling of unsafe code execution, similarity algorithms, async
+workflows, and distributed communication.
+
+### ✔️ **AI Integration Skills**
+
+Practical use of LLMs for automated feedback generation.
+
+### ✔️ **DevOps Maturity**
+
+Docker, container security, full-stack orchestration, reproducible
+environments.
+
+### ✔️ **Production-Ready Patterns**
+
+-   Retry & error-handling with Kafka\
+-   SSE for real-time UI\
+-   Separation of concerns\
+-   Domain-driven modeling
+
+------------------------------------------------------------------------
+
+## 👨‍💻 Author
+
+**Pablo Calatayud**\
+Backend Software Engineer\
+Specialized in Java, Spring Boot, Distributed Systems & AI Integration.

@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: authorship-service
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
+
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      allow.auto.create.topics: true
+    consumer:
+      group-id: ${SPRING_KAFKA_GROUP_ID:authorship-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.calata.evaluator.contracts.*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWK_SET_URI:http://localhost:8088/.well-known/jwks.json}
+      client:
+        registration:
+          internal:
+            client-id: authorship-service
+            client-secret: ${OAUTH_CLIENT_SECRET:dev-secret}
+            authorization-grant-type: client_credentials
+            scope: submission.write
+        provider:
+          internal:
+            token-uri: ${TOKEN_URI:http://localhost:8088/}
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-5-mini
+          temperature: 1
+
+server:
+  port: ${SERVER_PORT:8092}
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+
+app:
+  kafka:
+    group: authorship-group

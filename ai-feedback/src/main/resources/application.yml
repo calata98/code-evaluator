@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: ai-feedback
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
+
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      allow.auto.create.topics: true
+    consumer:
+      group-id: ${SPRING_KAFKA_GROUP_ID:ai-feedback-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.calata.evaluator.contracts.events"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-5-mini
+          temperature: 1
+
+server:
+  port: ${SERVER_PORT:8086}
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+
+app:
+  kafka:
+    group: ai-feedback-group

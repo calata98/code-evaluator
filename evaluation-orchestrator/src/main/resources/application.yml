@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: evaluation-orchestrator
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      allow.auto.create.topics: true
+    consumer:
+      group-id: ${SPRING_KAFKA_GROUP_ID:evaluation-orchestrator-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.calata.evaluator.contracts.events"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    listener:
+      missing-topics-fatal: false
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
+  security:
+    oauth2:
+      client:
+        registration:
+          internal:
+            client-id: evaluation-orchestrator
+            client-secret: ${OAUTH_CLIENT_SECRET:dev-secret}
+            authorization-grant-type: client_credentials
+            scope: submission.write
+        provider:
+          internal:
+            token-uri: ${TOKEN_URI:http://localhost:8088/}
+
+server:
+  port: ${SERVER_PORT:8082}
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+
+app:
+  kafka:
+    group: evaluation-group
+  submission-api:
+    base-url: ${SUBMISSIONS_API_URL:http://localhost:8080}
+    defaultTimeLimitMs: ${APP_LIMITS_TIME_MS:5000}
+    defaultMemoryMb: ${APP_LIMITS_MEM_MB:512}
