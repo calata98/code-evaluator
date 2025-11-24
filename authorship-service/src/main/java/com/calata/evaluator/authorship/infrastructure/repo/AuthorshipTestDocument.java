@@ -18,7 +18,6 @@ public class AuthorshipTestDocument {
     private List<QuestionDoc> questions;
     private Instant createdAt;
     private Instant expiresAt;
-    private boolean answered;
 
     @Data
     public static class QuestionDoc {

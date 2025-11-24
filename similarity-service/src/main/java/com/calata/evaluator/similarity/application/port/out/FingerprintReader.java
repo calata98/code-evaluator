@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FingerprintReader {
-    Optional<Fingerprint> findByShaRaw(String shaRaw);
-    Optional<Fingerprint> findByShaNorm(String shaNorm);
-    List<Fingerprint> findRecentByLangAndSize(String lang, int lineCount, int limit, double tolerance);
+    Optional<Fingerprint> findByShaRaw(String shaRaw, String userId);
+    Optional<Fingerprint> findByShaNorm(String shaNorm, String userId);
+    List<Fingerprint> findRecentByLangAndSize(String lang, int lineCount, int limit, double tolerance, String userId);
 }

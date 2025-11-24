@@ -4,8 +4,11 @@ spring:
   data:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
+
   kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      allow.auto.create.topics: true
     consumer:
       group-id: ${SPRING_KAFKA_GROUP_ID:ai-feedback-group}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -20,13 +23,16 @@ spring:
       api-key: ${OPENAI_API_KEY:}
       chat:
         options:
-          model: gpt-4o-mini
+          model: gpt-5-mini
+          temperature: 1
 
 server:
   port: ${SERVER_PORT:8086}
 
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+
 app:
   kafka:
-    topics:
-      feedbackCreated: ${APP_TOPICS_FEED_CREATE:feedback-created}
-      feedbackRequested: ${APP_TOPICS_FEED_REQUEST:feedback-requests}
+    group: ai-feedback-group

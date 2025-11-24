@@ -14,7 +14,7 @@ public class UserEventBus {
 
     public Sinks.Many<FrontEvent> getSinkFor(String userId) {
         return sinks.computeIfAbsent(userId, id ->
-                Sinks.many().replay().latest()
+                Sinks.many().multicast().onBackpressureBuffer()
         );
     }
 

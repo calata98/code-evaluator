@@ -2,7 +2,7 @@ package com.calata.evaluator.evaluation.orchestrator.infrastructure.kafka.produc
 
 import com.calata.evaluator.contracts.events.ExecutionRequest;
 import com.calata.evaluator.evaluation.orchestrator.application.port.out.ExecutionRequester;
-import com.calata.evaluator.evaluation.orchestrator.infrastructure.config.KafkaTopicsProps;
+import com.calata.evaluator.kafkaconfig.KafkaTopicsProperties;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 public class ExecutionRequestKafkaAdapter implements ExecutionRequester {
 
     private final KafkaTemplate<String, ExecutionRequest> kafkaTemplate;
-    private final KafkaTopicsProps topics;
+    private final KafkaTopicsProperties topics;
 
     public ExecutionRequestKafkaAdapter(KafkaTemplate<String, ExecutionRequest> kafkaTemplate,
-            KafkaTopicsProps topics) {
+            KafkaTopicsProperties topics) {
         this.kafkaTemplate = kafkaTemplate;
         this.topics = topics;
     }
 
     @Override
     public void requestExecution(ExecutionRequest request) {
-        kafkaTemplate.send(topics.executionRequests(), request.submissionId(), request);
+        kafkaTemplate.send(topics.getExecutionRequests(), request.submissionId(), request);
     }
 }

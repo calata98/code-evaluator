@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public interface SpringDataFingerprintRepository extends MongoRepository<FingerprintDocument, String> {
 
-    Optional<FingerprintDocument> findFirstByShaRaw(String shaRaw);
+    Optional<FingerprintDocument> findFirstByShaRawAndUserIdNot(String shaRaw, String userId);
 
-    Optional<FingerprintDocument> findFirstByShaNorm(String shaNorm);
+    Optional<FingerprintDocument> findFirstByShaNormAndUserIdNot(String shaNorm, String userId);
 
-    @Query("{ 'language': ?0, 'lineCount': { $gte: ?1, $lte: ?2 } }")
-    List<FingerprintDocument> findByLangAndCountBetween(String lang, int min, int max, Sort sort);
+    @Query("{ 'language': ?0, 'lineCount': { $gte: ?1, $lte: ?2 }, 'userId':  { $ne:  ?3}}")
+    List<FingerprintDocument> findByLangAndCountBetween(String lang, int min, int max, String userId, Sort sort);
 }

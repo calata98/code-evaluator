@@ -5,8 +5,8 @@ import java.util.List;
 public record AIFeedbackRequested(
         String evaluationId,
         String submissionId,
-        String code,
         String language,
+        String code,
         List<String> types,
         Integer maxItemsPerType,
         String stdout,

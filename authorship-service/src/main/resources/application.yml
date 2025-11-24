@@ -4,8 +4,11 @@ spring:
   data:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
+
   kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      allow.auto.create.topics: true
     consumer:
       group-id: ${SPRING_KAFKA_GROUP_ID:authorship-group}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -19,21 +22,32 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8088/.well-known/jwks.json
+          jwk-set-uri: ${JWK_SET_URI:http://localhost:8088/.well-known/jwks.json}
+      client:
+        registration:
+          internal:
+            client-id: authorship-service
+            client-secret: ${OAUTH_CLIENT_SECRET:dev-secret}
+            authorization-grant-type: client_credentials
+            scope: submission.write
+        provider:
+          internal:
+            token-uri: ${TOKEN_URI:http://localhost:8088/}
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:}
       chat:
         options:
-          model: gpt-4o-mini
+          model: gpt-5-mini
+          temperature: 1
 
 server:
   port: ${SERVER_PORT:8092}
 
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+
 app:
   kafka:
-    topics:
-      similarityComputed: similarity-computed
-      authorshipAnswersProvided: authorship-answers-provided
-      authorshipTestCreated: authorship-test-created
-      authorshipResultComputed: authorship-result-computed
+    group: authorship-group

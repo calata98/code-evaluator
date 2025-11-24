@@ -10,8 +10,10 @@ server:
   port: 8088
 
 app:
-  issuer: "http://localhost:8088"
+  issuer: ${ISSUER:http://localhost:8088}
   front-origin: ${FRONT_ORIGIN:http://localhost:5173}
+  security:
+    client-secret: ${OAUTH_CLIENT_SECRET:dev-secret}
 
 security:
   jwt:
@@ -22,4 +24,5 @@ security:
 
 logging:
   level:
-    root: INFO
+    root: ${LOG_LEVEL:INFO}
+

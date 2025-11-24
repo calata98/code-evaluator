@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class SpringAIAuthorQuizGeneratorAdapter implements AITestGenerator {
@@ -61,25 +60,21 @@ public class SpringAIAuthorQuizGeneratorAdapter implements AITestGenerator {
                 }
             }
             return new AuthorshipTest(
-                    UUID.randomUUID().toString(),
                     submissionId,
                     userId,
                     language,
                     qs,
                     Instant.now(),
-                    Instant.now().plus(Duration.ofHours(48)),
-                    false
+                    Instant.now().plus(Duration.ofHours(48))
             );
         } catch (Exception e) {
             return new AuthorshipTest(
-                    UUID.randomUUID().toString(),
                     submissionId,
                     userId,
                     language,
                     List.of(),
                     Instant.now(),
-                    Instant.now().plus(Duration.ofHours(48)),
-                    false
+                    Instant.now().plus(Duration.ofHours(48))
             );
         }
 

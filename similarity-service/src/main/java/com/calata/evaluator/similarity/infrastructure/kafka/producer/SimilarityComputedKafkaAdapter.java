@@ -1,8 +1,8 @@
 package com.calata.evaluator.similarity.infrastructure.kafka.producer;
 
+import com.calata.evaluator.kafkaconfig.KafkaTopicsProperties;
 import com.calata.evaluator.similarity.application.port.out.DomainEventPublisher;
 import com.calata.evaluator.similarity.domain.model.SimilarityResult;
-import com.calata.evaluator.similarity.infrastructure.config.KafkaTopicsProps;
 import com.calata.evaluator.contracts.events.SimilarityComputed;
 import com.calata.evaluator.similarity.infrastructure.repo.Mappers;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 public class SimilarityComputedKafkaAdapter implements DomainEventPublisher {
 
     private final KafkaTemplate<String, Object> kafka;
-    private final KafkaTopicsProps topics;
+    private final KafkaTopicsProperties topics;
 
-    public SimilarityComputedKafkaAdapter(KafkaTemplate<String, Object> kafka, KafkaTopicsProps topics) {
+    public SimilarityComputedKafkaAdapter(KafkaTemplate<String, Object> kafka, KafkaTopicsProperties topics) {
         this.kafka = kafka;
         this.topics = topics;
     }
@@ -23,6 +23,6 @@ public class SimilarityComputedKafkaAdapter implements DomainEventPublisher {
     @Override
     public void publishSimilarityComputed(SimilarityResult result) {
         SimilarityComputed event = Mappers.toEvent(result);
-        kafka.send(topics.similarityComputed(), result.submissionId(), event);
+        kafka.send(topics.getSimilarityComputed(), result.submissionId(), event);
     }
 }

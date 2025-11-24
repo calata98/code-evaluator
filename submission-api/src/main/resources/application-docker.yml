@@ -1,9 +1,0 @@
-spring:
-  kafka:
-    bootstrap-servers: kafka:9092
-  data:
-    mongodb:
-      uri: mongodb://mongo:27017/codeexecutor
-
-server:
-  port: 8080

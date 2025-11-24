@@ -2,7 +2,7 @@ package com.calata.evaluator.authorship.infrastructure.ai;
 
 import com.calata.evaluator.authorship.application.port.out.AITestEvaluator;
 import com.calata.evaluator.authorship.domain.model.AuthorshipAnswer;
-import com.calata.evaluator.authorship.domain.model.AuthorshipResult;
+import com.calata.evaluator.authorship.domain.model.AuthorshipEvaluation;
 import com.calata.evaluator.authorship.domain.model.AuthorshipTest;
 import com.calata.evaluator.authorship.domain.model.Verdict;
 import com.calata.evaluator.authorship.domain.service.QuizGrader;
@@ -28,7 +28,7 @@ public class SpringAIAuthorQuizEvaluatorAdapter implements AITestEvaluator {
     }
 
     @Override
-    public AuthorshipResult evaluate(AuthorshipTest test, List<AuthorshipAnswer> answers, String truncatedCode) {
+    public AuthorshipEvaluation evaluate(AuthorshipTest test, List<AuthorshipAnswer> answers, String truncatedCode) {
 
         var content = chat.prompt()
                 .system(PromptTemplates.EVAL_SYSTEM)
@@ -44,14 +44,14 @@ public class SpringAIAuthorQuizEvaluatorAdapter implements AITestEvaluator {
             try {
                 verdict = Verdict.valueOf(ev.verdict());
             } catch (Exception e) {
-                verdict = score >= 0.8 ? Verdict.LIKELY_AUTHOR : (score >= 0.6 ? Verdict.UNCERTAIN : Verdict.LIKELY_NOT_AUTHOR);
+                verdict = score >= 0.8 ? Verdict.LIKELY_AUTHOR : (score > 0.5 ? Verdict.UNCERTAIN : Verdict.LIKELY_NOT_AUTHOR);
             }
 
             String justification = ev.justification() != null ? ev.justification() : "Heuristic fallback.";
 
-            return AuthorshipResult.of(test.submissionId(), test.language(), score, verdict, justification);
+            return AuthorshipEvaluation.of(test.submissionId(), test.userId(), test.language(), score, verdict, justification);
         } catch (JsonProcessingException e) {
-            return AuthorshipResult.of(test.submissionId(), test.language(), 0, Verdict.UNCERTAIN, "Error parsing AI response.");
+            return AuthorshipEvaluation.of(test.submissionId(), test.userId(), test.language(), 0, Verdict.UNCERTAIN, "Error parsing AI response.");
         }
 
     }

@@ -51,7 +51,7 @@ public class EvaluationWriterMongoAdapter implements EvaluationWriter {
 
         Update update = new Update()
                 .set("score", score)
-                .set("rubric", rubric)      // sustituye el map completo
+                .set("rubric", rubric)
                 .set("justification", justification)
                 .set("passed", passed);
 

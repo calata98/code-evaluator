@@ -13,11 +13,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthorshipQueryService implements GetAuthorshipTestQuery {
 
-    private final AuthorshipTestReader repo;
+    private final AuthorshipTestReader reader;
 
     @Override
-    public Mono<AuthorshipTest> getForUser(String testId, String userId) {
-        return repo.findById(testId)
+    public Mono<AuthorshipTest> getTestForUser(String testId, String userId) {
+        return reader.findByTestId(testId)
                 .switchIfEmpty(Mono.error(new RuntimeException("not-found")))
                 .map(test -> {
                     AuthorshipPolicy.assertReadableBy(test, userId);

@@ -8,6 +8,7 @@ import com.calata.evaluator.submission.api.application.command.UpdateSubmissionS
 import com.calata.evaluator.submission.api.application.port.in.CreateSubmissionUseCase;
 import com.calata.evaluator.submission.api.application.port.in.GetSubmissionUseCase;
 import com.calata.evaluator.submission.api.application.port.in.UpdateSubmissionStatusUseCase;
+import com.calata.evaluator.contracts.dto.SubmissionCodeResponse;
 import com.calata.evaluator.submission.api.infrastructure.web.dto.SubmissionIdResponse;
 import com.calata.evaluator.submission.api.infrastructure.web.dto.SubmissionRequest;
 import jakarta.validation.Valid;
@@ -59,5 +60,21 @@ import java.util.List;
             );
             var id = updateSubmissionStatus.updateSubmissionStatus(cmd.submissionId(), cmd.status());
             return ResponseEntity.accepted().body(new SubmissionIdResponse(id));
+        }
+
+        @GetMapping("/{id}/code")
+        public ResponseEntity<SubmissionCodeResponse> getSubmissionCode(@PathVariable String id) {
+            var submission = getSubmission.getSubmission(id);
+
+            if (submission == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            var dto = new SubmissionCodeResponse(
+                    submission.id(),
+                    submission.code()
+            );
+
+            return ResponseEntity.ok(dto);
         }
     }

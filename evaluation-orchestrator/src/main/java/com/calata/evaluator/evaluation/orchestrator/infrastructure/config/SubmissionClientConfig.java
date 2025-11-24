@@ -12,7 +12,7 @@ public class SubmissionClientConfig {
 
     @Bean
     WebClient submissionWebClient(
-            @Value("${SUBMISSIONS_BASE_URL:http://localhost:8080}") String baseUrl,
+            @Value("${SUBMISSIONS_API_URL:http://localhost:8080}") String baseUrl,
             @Value("${INTERNAL_API_KEY}") String apiKey
     ) {
         return WebClient.builder()

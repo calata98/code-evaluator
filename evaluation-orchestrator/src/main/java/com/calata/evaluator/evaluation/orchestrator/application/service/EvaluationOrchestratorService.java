@@ -4,7 +4,7 @@ import com.calata.evaluator.contracts.events.EvaluationCreated;
 import com.calata.evaluator.contracts.events.ExecutionConstraints;
 import com.calata.evaluator.contracts.events.ExecutionRequest;
 import com.calata.evaluator.evaluation.orchestrator.application.command.ProcessAIFeedbackCreatedCommand;
-import com.calata.evaluator.evaluation.orchestrator.application.command.ProcessCodeSubmissionCommand;
+import com.calata.evaluator.evaluation.orchestrator.application.command.ProcessSubmissionCreatedCommand;
 import com.calata.evaluator.evaluation.orchestrator.application.command.ProcessExecutionResultCommand;
 import com.calata.evaluator.evaluation.orchestrator.application.port.in.HandleAIFeedbackCreatedUseCase;
 import com.calata.evaluator.evaluation.orchestrator.application.port.in.HandleCodeSubmissionUseCase;
@@ -42,7 +42,7 @@ public class EvaluationOrchestratorService
     }
 
     @Override
-    public void handle(ProcessCodeSubmissionCommand cmd) {
+    public void handle(ProcessSubmissionCreatedCommand cmd) {
         submissionStatusUpdater.markRunning(cmd.submissionId());
 
         var constraints = new ExecutionConstraints(Duration.ofMillis(3000), 256L, 1);

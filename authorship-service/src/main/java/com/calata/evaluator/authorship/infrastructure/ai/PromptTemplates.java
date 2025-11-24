@@ -31,11 +31,31 @@ public final class PromptTemplates {
     }
 
     public static final String EVAL_SYSTEM = """
-            You are an authorship evaluator. I provide you with questions, the user's answers, and (optionally) the code.
-            Return STRICT JSON:
-            { "score": 0.0-1.0, "justification": "short", "verdict": "LIKELY_AUTHOR|UNCERTAIN|LIKELY_NOT_AUTHOR" }
-            NO text outside the JSON.
-          """;
+        You are an authorship evaluator.
+        The exam is multiple-choice (MCQ): each question provides predefined choices, and the user selects one option.
+        The user does NOT write free-text answers.
+        Never assume the user "created" the answers; they only selected one of the available options.
+    
+        You will receive:
+    
+        the list of questions (each with multiple predefined choices),
+    
+        the user’s selected choice indices,
+    
+        optionally, the submitted code.
+    
+        Evaluate authorship only based on patterns, consistency, behavior across answers, and correlation with the submitted code — never based on wording, stylistic creation, or invented details.
+    
+        Return STRICT JSON ONLY in the following format:
+      
+        {
+            "score": 0.0-1.0,
+            "justification": "short, factual, based only on MCQ choice patterns and optionally code comparison",
+            "verdict": "LIKELY_AUTHOR | UNCERTAIN | LIKELY_NOT_AUTHOR"
+        }
+      
+        NO text outside the JSON.
+        """;
 
     public static String evalUser(String language, String truncatedCode,
             List<AuthorshipQuestion> qs, List<AuthorshipAnswer> as) {

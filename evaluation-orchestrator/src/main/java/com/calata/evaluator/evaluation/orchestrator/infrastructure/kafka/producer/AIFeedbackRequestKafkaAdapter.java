@@ -2,7 +2,7 @@ package com.calata.evaluator.evaluation.orchestrator.infrastructure.kafka.produc
 
 import com.calata.evaluator.contracts.events.AIFeedbackRequested;
 import com.calata.evaluator.evaluation.orchestrator.application.port.out.AIFeedbackRequestedPublisher;
-import com.calata.evaluator.evaluation.orchestrator.infrastructure.config.KafkaTopicsProps;
+import com.calata.evaluator.kafkaconfig.KafkaTopicsProperties;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 public class AIFeedbackRequestKafkaAdapter implements AIFeedbackRequestedPublisher {
 
     private final KafkaTemplate<String, AIFeedbackRequested> kafkaTemplate;
-    private final KafkaTopicsProps topics;
+    private final KafkaTopicsProperties topics;
 
     public AIFeedbackRequestKafkaAdapter(KafkaTemplate<String, AIFeedbackRequested> kafkaTemplate,
-            KafkaTopicsProps topics) {
+            KafkaTopicsProperties topics) {
         this.kafkaTemplate = kafkaTemplate;
         this.topics = topics;
     }
@@ -24,6 +24,6 @@ public class AIFeedbackRequestKafkaAdapter implements AIFeedbackRequestedPublish
         var event = new AIFeedbackRequested(
                 evaluationId, submissionId, language, code, null, null, stdout, stderr, timeMs, memoryMb
         );
-        kafkaTemplate.send(topics.aiFeedbackRequested(), evaluationId, event);
+        kafkaTemplate.send(topics.getAiFeedbackRequested(), evaluationId, event);
     }
 }

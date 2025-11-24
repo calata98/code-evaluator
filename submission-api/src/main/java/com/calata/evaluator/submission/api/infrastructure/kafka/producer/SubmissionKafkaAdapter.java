@@ -2,9 +2,9 @@ package com.calata.evaluator.submission.api.infrastructure.kafka.producer;
 
 import com.calata.evaluator.contracts.events.SubmissionCreated;
 import com.calata.evaluator.contracts.events.SubmissionStatusUpdated;
+import com.calata.evaluator.kafkaconfig.KafkaTopicsProperties;
 import com.calata.evaluator.submission.api.application.port.out.SubmissionEventsPublisher;
 import com.calata.evaluator.submission.api.domain.model.submission.Submission;
-import com.calata.evaluator.submission.api.infrastructure.config.KafkaTopicsProps;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ import java.time.Instant;
 public class SubmissionKafkaAdapter implements SubmissionEventsPublisher {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final KafkaTopicsProps props;
+    private final KafkaTopicsProperties props;
 
-    public SubmissionKafkaAdapter(KafkaTemplate<String, Object> kafkaTemplate, KafkaTopicsProps props) {
+    public SubmissionKafkaAdapter(KafkaTemplate<String, Object> kafkaTemplate, KafkaTopicsProperties props) {
         this.kafkaTemplate = kafkaTemplate;
         this.props = props;
     }

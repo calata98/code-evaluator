@@ -36,6 +36,7 @@ public class AuthController {
         var user = registerUC.register(new RegisterUserCommand(
                 req.email(), req.password(), WebMappers.toRole(req.role())
         ));
+
         return ResponseEntity.status(201).body(WebMappers.toUserResponse(user));
     }
 

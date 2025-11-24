@@ -24,7 +24,8 @@ public class SseController {
         return bus.getSinkFor(userId)
                 .asFlux()
                 .map(e -> ServerSentEvent.builder(e.payload())
-                        .event("message")
+                        .event(e.type())
+                        .data(e)
                         .build());
     }
 }

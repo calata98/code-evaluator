@@ -6,8 +6,6 @@ import com.calata.evaluator.authorship.domain.model.AuthorshipTest;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 @Component
 public class AuthorshipTestMongoAdapter implements AuthorshipTestReader, AuthorshipTestWriter {
 
@@ -18,19 +16,12 @@ public class AuthorshipTestMongoAdapter implements AuthorshipTestReader, Authors
     }
 
     @Override
-    public Optional<AuthorshipTest> findBySubmission(String submissionId) {
-        return repo.findBySubmissionId(submissionId)
-                .map(MongoMappers::fromDocument)
-                .blockOptional();
-    }
-
-    @Override
-    public Mono<AuthorshipTest> findById(String id) {
-        return repo.findById(id).map(MongoMappers::fromDocument);
+    public Mono<AuthorshipTest> findByTestId(String id) {
+        return repo.findBySubmissionId(id).map(Mappers::toDomain);
     }
 
     @Override
     public Mono<Void> save(AuthorshipTest test) {
-        return repo.save(MongoMappers.toDocument(test)).then();
+        return repo.save(Mappers.toDocument(test)).then();
     }
 }

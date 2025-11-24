@@ -27,18 +27,16 @@ public class SubmissionDocument {
 
     @Indexed
     private String userId;
-
     private String title;
-
     private String code;
-
     private Language language;
 
     @Indexed
     private SubmissionStatus status;
-
     private Instant createdAt;
-
     private Instant updatedAt;
+    private String stepName;
+    private String errorCode;
+    private String errorMessage;
 
 }

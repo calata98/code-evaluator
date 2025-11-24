@@ -18,18 +18,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/authorship-tests/**").authenticated()
+                        .requestMatchers("/authorship-evaluations/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
-
-//    @Bean
-//    JwtDecoder jwtDecoder(
-//            @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwkSetUri
-//    ) {
-//        // Ejemplo con JWK set (muy típico si usas Keycloak / Spring Authorization Server)
-//        return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
-//    }
 }

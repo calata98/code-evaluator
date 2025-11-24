@@ -2,9 +2,9 @@ package com.calata.evaluator.aifeedback.infrastructure.kafka.producer;
 
 import com.calata.evaluator.aifeedback.application.port.out.FeedbackCreatedPublisher;
 import com.calata.evaluator.aifeedback.domain.model.Feedback;
-import com.calata.evaluator.aifeedback.infrastructure.config.KafkaTopicsProps;
 import com.calata.evaluator.contracts.events.AIFeedbackCreated;
 import com.calata.evaluator.contracts.types.FeedbackType;
+import com.calata.evaluator.kafkaconfig.KafkaTopicsProperties;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +18,9 @@ public class FeedbackCreatedKafkaAdapter implements FeedbackCreatedPublisher {
     private final KafkaTemplate<String, AIFeedbackCreated> kafka;
     private final String topic;
 
-    public FeedbackCreatedKafkaAdapter(KafkaTemplate<String, AIFeedbackCreated> kafka, KafkaTopicsProps props) {
+    public FeedbackCreatedKafkaAdapter(KafkaTemplate<String, AIFeedbackCreated> kafka, KafkaTopicsProperties props) {
         this.kafka = kafka;
-        this.topic = props.feedbackCreated();
+        this.topic = props.getAiFeedbackCreated();
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.List;
 
 public record AuthorshipTestView(
-        String id,
         String submissionId,
         String language,
         Instant createdAt,

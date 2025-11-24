@@ -20,8 +20,11 @@ public class Submission {
     private SubmissionStatus status;
     private Instant createdAt;
     private Instant updatedAt;
+    private String stepName;
+    private String errorCode;
+    private String errorMessage;
 
     public static Submission create(String userId, String title, String code, Language language) {
-        return new Submission(UUID.randomUUID().toString(), userId, title, code, language, PENDING, Instant.now(), Instant.now());
+        return new Submission(UUID.randomUUID().toString(), userId, title, code, language, PENDING, Instant.now(), Instant.now(), null, null, null);
     }
 }

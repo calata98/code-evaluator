@@ -36,6 +36,9 @@ import java.util.UUID;
 @Configuration
 public class AuthServerConfig {
 
+    @Value("${app.security.client-secret}")
+    private String developmentSecret;
+
     // Authorization Server
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -95,7 +98,7 @@ public class AuthServerConfig {
     RegisteredClientRepository registeredClientRepository(PasswordEncoder encoder) {
         var client = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("eval-orchestrator")
-                .clientSecret(encoder.encode("dev-secret"))
+                .clientSecret(encoder.encode(developmentSecret))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scope("submission.write")

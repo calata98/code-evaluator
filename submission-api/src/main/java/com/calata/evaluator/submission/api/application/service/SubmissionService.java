@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-class SubmissionService implements CreateSubmissionUseCase, UpdateSubmissionStatusUseCase, GetSubmissionUseCase {
+public class SubmissionService implements CreateSubmissionUseCase, UpdateSubmissionStatusUseCase, GetSubmissionUseCase {
 
     private final SubmissionWriter submissionWriter;
     private final SubmissionEventsPublisher events;

@@ -76,6 +76,7 @@ public class SpringAIFeedbackGeneratorAdapter implements FeedbackGenerator {
             return new FeedbackAggregate(score, rubric, justification, items);
 
         } catch (Exception e) {
+            assert resp != null;
             List<Feedback> items = List.of(Feedback.of(
                     "Automatic Feedback",
                     resp.length() > 1000 ? resp.substring(0, 1000) : resp,
@@ -89,7 +90,7 @@ public class SpringAIFeedbackGeneratorAdapter implements FeedbackGenerator {
         }
     }
 
-    private static int clamp0to100(int v){ return Math.max(0, Math.min(100, v)); }
+    private static int clamp0to100(int v){ return Math.clamp(v, 0, 100); }
 
     private static int asIntSafe(String s){
         try { return (int)Math.round(Double.parseDouble(s)); } catch (Exception e){ return 0; }

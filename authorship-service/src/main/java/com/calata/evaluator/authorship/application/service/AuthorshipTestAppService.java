@@ -6,6 +6,7 @@ import com.calata.evaluator.authorship.application.port.out.AITestGenerator;
 import com.calata.evaluator.authorship.application.port.out.AuthorshipTestCreatedPublisher;
 import com.calata.evaluator.authorship.application.port.out.AuthorshipTestWriter;
 import com.calata.evaluator.authorship.domain.model.AuthorshipTest;
+import com.calata.evaluator.authorship.infrastructure.repo.Mappers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -49,18 +50,18 @@ public class AuthorshipTestAppService implements HandleSimilarityComputedUseCase
         );
 
         var withExpiry = new AuthorshipTest(
-                test.testId(),
                 test.submissionId(),
                 test.userId(),
                 test.language(),
                 test.questions(),
                 test.createdAt() == null ? Instant.now() : test.createdAt(),
-                test.expiresAt() == null ? Instant.now().plus(Duration.ofHours(ttlHours)) : test.expiresAt(),
-                test.answered()
+                test.expiresAt() == null ? Instant.now().plus(Duration.ofHours(ttlHours)) : test.expiresAt()
         );
 
+        var event = Mappers.toEvent(withExpiry, cmd.code());
+
         testWriter.save(withExpiry).block();
-        publisher.publishAuthorshipTestCreated(withExpiry);
+        publisher.publishAuthorshipTestCreated(event);
     }
 
     private boolean isSuspicious(String type, double score) {

@@ -10,14 +10,14 @@ public final class SubmissionPersistenceMapper {
     public static SubmissionDocument toDocument(Submission s) {
         return new SubmissionDocument(
                 s.getId(), s.getUserId(), s.getTitle(), s.getCode(), s.getLanguage(),
-                s.getStatus(), s.getCreatedAt(), s.getUpdatedAt()
+                s.getStatus(), s.getCreatedAt(), s.getUpdatedAt(), s.getStepName(), s.getErrorCode(), s.getErrorMessage()
         );
     }
 
     public static Submission toDomain(SubmissionDocument d) {
         return new Submission(
                 d.getId(), d.getUserId(), d.getTitle(), d.getCode(), d.getLanguage(),
-                d.getStatus(), d.getCreatedAt(), d.getUpdatedAt()
+                d.getStatus(), d.getCreatedAt(), d.getUpdatedAt(), d.getStepName(), d.getErrorCode(), d.getErrorMessage()
         );
     }
 }

@@ -10,10 +10,6 @@ public class AuthorshipPolicy {
             throw new SecurityException("not owner");
         }
 
-        if (test.answered()) {
-            throw new IllegalStateException("already answered");
-        }
-
         if (test.expiresAt().isBefore(Instant.now())) {
             throw new IllegalStateException("expired");
         }

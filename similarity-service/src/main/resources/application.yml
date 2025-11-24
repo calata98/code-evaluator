@@ -6,6 +6,9 @@ spring:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/codeexecutor}
 
   kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      allow.auto.create.topics: true
     consumer:
       group-id: similarity-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -22,9 +25,7 @@ server:
 
 app:
   kafka:
-    topics:
-      evaluationCreated: evaluation-created
-      similarityComputed: similarity-computed
+    group: similarity-group
 
 similarity:
   sizeTolerance: 0.20

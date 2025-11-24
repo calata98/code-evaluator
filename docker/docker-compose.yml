@@ -4,18 +4,19 @@ services:
     image: confluentinc/cp-kafka:latest
     ports:
       - "9092:9092"
-      - "29092:29092"
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
 
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:29092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
 
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -24,6 +25,12 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
 
       KAFKA_LOG_DIRS: /var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   mongo:
     image: mongo:latest
@@ -40,20 +47,26 @@ services:
         MODULE: submission-api
     image: evaluator/submission-api:dev
     depends_on:
-      - kafka
-      - mongo
+      kafka:
+        condition: service_healthy
     ports: 
       - "8080:8080"
+      - "5005:5005"
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/codeexecutor
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+
+      SUBMISSIONS_API_URL: ${SUBMISSIONS_API_URL}
+      AUTHORSHIP_API_URL: ${AUTHORSHIP_API_URL}
 
     
       JWT_SECRET: ${JWT_SECRET}
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
       FRONT_ORIGIN: ${FRONT_ORIGIN}
+
+      JWK_SET_URI: ${JWK_SET_URI}
 
   evaluation-orchestrator:
     build:
@@ -63,38 +76,50 @@ services:
         MODULE: evaluation-orchestrator
     image: evaluator/evaluation-orchestrator:dev
     depends_on:
-      - kafka
-      - mongo
+      kafka:
+        condition: service_healthy
     ports: 
       - "8082:8082"
+      - "5006:5005"
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/codeexecutor
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
 
+      TOKEN_URI: ${TOKEN_URI}
 
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
-      SUBMISSIONS_BASE_URL: http://submission-api:8080
+      SUBMISSIONS_API_URL: ${SUBMISSIONS_API_URL}
+
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
 
 
   executor-service:
     build:
       context: ..
-      dockerfile: docker/dockerfile-svc.dockerfile
+      dockerfile: docker/dockerfile-executor-service.dockerfile
       args:
         MODULE: executor-service
     image: evaluator/executor-service:dev
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - code-evaluator-workspaces:/workspace
     depends_on:
-      - kafka
-      - mongo
+      kafka:
+        condition: service_healthy
     ports:
       - "8084:8084"
+      - "5007:5005"
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/codeexecutor
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+
+      SANDBOX_HOST_WS_DIR: ${SANDBOX_HOST_WS_DIR}
+
+      SANDBOX_USER: ${SANDBOX_USER}
 
   ai-feedback:
     build:
@@ -104,15 +129,18 @@ services:
         MODULE: ai-feedback
     image: evaluator/ai-feedback:dev
     depends_on:
-      - kafka
-      - mongo
+      kafka:
+        condition: service_healthy
     ports:
       - "8086:8086"
+      - "5008:5005"
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/codeexecutor
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
 
   user-service:
     build:
@@ -120,19 +148,87 @@ services:
       dockerfile: docker/dockerfile-user-service.dockerfile
     image: evaluator/user-service:dev
     depends_on:
-      - kafka
-      - mongo
+      kafka:
+        condition: service_healthy
     ports:
       - "8088:8088"
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/codeexecutor
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
 
       JWT_SECRET: ${JWT_SECRET}
 
-      JWT_PRIVATE_PATH: /app/jwt_private.pem
-      JWT_PUBLIC_PATH: /app/jwt_public.pem
+      JWT_PRIVATE_PATH: ${JWT_PRIVATE_PATH}
+      JWT_PUBLIC_PATH: ${JWT_PUBLIC_PATH}
+      ISSUER: ${ISSUER}
+
+  similarity-service:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile-svc.dockerfile
+      args:
+        MODULE: similarity-service
+    image: evaluator/similarity-service:dev
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8090:8090"
+      - "5010:5005"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+
+  authorship-service:
+    build:
+      context: ..
+      dockerfile: docker/dockerfile-svc.dockerfile
+      args:
+        MODULE: authorship-service
+    image: evaluator/authorship-service:dev
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8092:8092"
+      - "5011:5005"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+
+      JWK_SET_URI: ${JWK_SET_URI}
+
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+      SUBMISSIONS_API_URL: ${SUBMISSIONS_API_URL}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET}
+      TOKEN_URI: ${TOKEN_URI}
+
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../docker/dockerfile-frontend.dockerfile
+      args:
+        VITE_AUTH_BYPASS: ${VITE_AUTH_BYPASS}
+        VITE_API_BASE: ${VITE_API_BASE}
+        VITE_AUTH_API: ${VITE_AUTH_API}
+    image: evaluator/frontend:dev
+    depends_on:
+      - submission-api
+      - user-service
+      - evaluation-orchestrator
+      - similarity-service
+      - authorship-service
+      - executor-service
+    ports:
+      - "5173:80"
 
   java17-sandbox:
     profiles: ["build-only"]
@@ -140,6 +236,8 @@ services:
       context: .
       dockerfile: sandbox/java17.dockerfile
     image: evaluator/java:17
+    volumes:
+      - code-evaluator-workspaces:/workspace
 
   python311-sandbox:
     profiles: ["build-only"]
@@ -147,6 +245,10 @@ services:
       context: .
       dockerfile: sandbox/python311.dockerfile
     image: evaluator/python:3.11
+    volumes:
+      - code-evaluator-workspaces:/workspace
 
 volumes:
   mongo_data:
+  code-evaluator-workspaces:
+    name: code-evaluator-workspaces

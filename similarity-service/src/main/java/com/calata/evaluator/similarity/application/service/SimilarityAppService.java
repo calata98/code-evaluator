@@ -58,7 +58,7 @@ public class SimilarityAppService implements HandleEvaluationCompletedUseCase {
         fingerprintWriter.upsert(fp);
 
         // Exact match
-        var exact = fingerprintReader.findByShaRaw(fp.shaRaw())
+        var exact = fingerprintReader.findByShaRaw(fp.shaRaw(), cmd.userId())
                 .filter(fingerprint -> !fingerprint.submissionId().equals(fp.submissionId()));
         if (exact.isPresent()) {
             SimilarityResult res = new SimilarityResult(
@@ -69,7 +69,7 @@ public class SimilarityAppService implements HandleEvaluationCompletedUseCase {
         }
 
         // Normalized match
-        var norm = fingerprintReader.findByShaNorm(fp.shaNorm())
+        var norm = fingerprintReader.findByShaNorm(fp.shaNorm(), cmd.userId())
                 .filter(doc -> !doc.submissionId().equals(fp.submissionId()));
         if (norm.isPresent()) {
             SimilarityResult res = new SimilarityResult(
@@ -81,7 +81,7 @@ public class SimilarityAppService implements HandleEvaluationCompletedUseCase {
 
         // Near match
         List<Fingerprint> candidates =
-                fingerprintReader.findRecentByLangAndSize(fp.language(), fp.lineCount(), recentLimit, sizeTolerance);
+                fingerprintReader.findRecentByLangAndSize(fp.language(), fp.lineCount(), recentLimit, sizeTolerance, cmd.userId());
 
         String bestId = null;
         double bestScore = 0.0;
